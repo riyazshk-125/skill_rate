@@ -47,6 +47,8 @@ dependencies:
   url_launcher: ^6.1.7
   loading_animation_widget: ^1.2.0+3
   flutter_svg: ^1.1.6
+  flutter_facebook_auth: ^5.0.6
+  google_sign_in: ^5.4.2
 
 dev_dependencies:
   flutter_test:

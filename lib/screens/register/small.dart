@@ -134,14 +134,18 @@ class Small extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SocialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.facebookLogin(context);
+                  },
                   buttonType: Type.Facebook,
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 SocialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.googleLogin(context);
+                  },
                   buttonType: Type.Google,
                 ),
               ],

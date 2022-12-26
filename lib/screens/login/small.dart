@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/helper/shared_files.dart';
-import 'package:skill_rate/screens/main/main.dart';
 import 'package:skill_rate/widgets/button.dart';
 import 'package:skill_rate/widgets/text_field_container.dart';
 
@@ -104,7 +103,7 @@ class Small extends StatelessWidget {
           ),
           AppButton(
             onTap: () {
-              Get.to(() => MainScreen());
+              controller.login(context);
             },
             text: "Login",
             isLoading: false,
@@ -122,14 +121,18 @@ class Small extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SocialButton(
-                onPressed: () {},
+                onPressed: () {
+                  controller.facebookLogin(context);
+                },
                 buttonType: Type.Facebook,
               ),
               const SizedBox(
                 width: 10,
               ),
               SocialButton(
-                onPressed: () {},
+                onPressed: () {
+                  controller.googleLogin(context);
+                },
                 buttonType: Type.Google,
               ),
             ],

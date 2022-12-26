@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Skill Rate</string>
+    <string name="facebook_app_id">1587415425046058</string>
+    <string name="fb_login_protocol_scheme">fb1587415425046058</string>
+    <string name="facebook_client_token">e79edd38bc72eedfc289a8bd4a57c48c</string>
+</resources>
