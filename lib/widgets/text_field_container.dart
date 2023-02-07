@@ -18,6 +18,9 @@ class TextFieldContainer extends StatelessWidget {
   Function()? onToggle;
   bool? showText;
   String? Function(String?)? validator;
+  Color? bgColor;
+  Color? borderColor;
+  Color? textColor;
 
   TextFieldContainer({
     Key? key,
@@ -32,6 +35,9 @@ class TextFieldContainer extends StatelessWidget {
     this.onToggle,
     this.validator,
     this.showText,
+    this.bgColor,
+    this.borderColor,
+    this.textColor,
   }) : super(key: key);
 
   @override
@@ -44,9 +50,9 @@ class TextFieldContainer extends StatelessWidget {
           // height: 50,
           margin: EdgeInsets.only(bottom: AppMethods.DEFAULT_PADDING / 2),
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: bgColor ?? Theme.of(context).canvasColor,
             border: Border.all(
-              color: Theme.of(context).dividerColor,
+              color: borderColor ?? Theme.of(context).dividerColor,
             ),
             borderRadius: BorderRadius.circular(
               8,
@@ -78,7 +84,7 @@ class TextFieldContainer extends StatelessWidget {
                       context: context,
                       fontSize: FontSize.H4,
                       // isBold: true,
-                      color: Theme.of(context).shadowColor,
+                      color: textColor ?? Theme.of(context).shadowColor,
                     ),
                     hintStyle: textStyle(
                       context: context,

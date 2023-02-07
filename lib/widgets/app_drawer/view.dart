@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/helper/styles.dart';
+import 'package:skill_rate/screens/profile/main.dart';
 import 'package:skill_rate/widgets/app_drawer/controller.dart';
 import 'package:skill_rate/widgets/button.dart';
 import 'package:skill_rate/widgets/flutter_bounce.dart';
@@ -64,6 +65,17 @@ class AppDrawerView extends StatelessWidget {
                 child: ListView(
                   physics: BouncingScrollPhysics(),
                   children: [
+                    if (controller.userModel.id != null)
+                      menuItem(
+                        context,
+                        "Profile",
+                        () async {
+                          Get.to(
+                            () => ProfileScreen(),
+                            arguments: controller.userModel,
+                          );
+                        },
+                      ),
                     menuItem(context, "Setting", () => {}),
                     menuItem(context, "Contact us", () => {}),
                     menuItem(context, "Help and Feedback", () => {}),
@@ -76,7 +88,9 @@ class AppDrawerView extends StatelessWidget {
               ),
               AppButton(
                 text: "LOGOUT",
-                onTap: () {},
+                onTap: () {
+                  controller.logout();
+                },
                 buttonTextStyle: textStyleMenu(
                   context: context,
                   color: Theme.of(context).cardColor,

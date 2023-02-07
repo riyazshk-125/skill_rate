@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
+
+import 'models/user_model.dart';
 
 class Prefs {
   late GetStorage _storage;
 
   final String _USER_TOKEN_KEY = "userTokenKey";
   final String _ON_BOARD_SCREEN = "onBoard";
+  final String _USER = "user";
 
   Prefs() {
     _storage = GetStorage();
@@ -32,5 +37,17 @@ class Prefs {
 
   Future<void> clearOnBoard() async {
     _storage.remove(_ON_BOARD_SCREEN);
+  }
+
+  Future<void> setUserModel(UserModel userModel) async {
+    return _storage.write(_USER, jsonEncode(userModel));
+  }
+
+  Future<UserModel> getUserModel() async {
+    try {
+      return UserModel.fromJson(jsonDecode(_storage.read<String>(_USER) ?? ""));
+    } catch (e) {
+      return UserModel();
+    }
   }
 }

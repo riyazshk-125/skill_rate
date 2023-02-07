@@ -8,6 +8,7 @@ import 'package:skill_rate/widgets/text_field_container.dart';
 import '../../helper/styles.dart';
 import '../../helper/validation_helper.dart';
 import '../../widgets/back_button.dart';
+import '../../widgets/flutter_bounce.dart';
 import '../../widgets/line_title.dart';
 import '../../widgets/social_button.dart';
 import 'controller.dart';
@@ -61,69 +62,218 @@ class Small extends StatelessWidget {
             SizedBox(
               height: AppMethods.DEFAULT_PADDING,
             ),
-            Form(
-              key: controller.formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
+            Bounce(
+              onPressed: () {
+                controller.loginWithPassword = true;
+                controller.update();
+              },
+              child: Row(
                 children: [
-                  TextFieldContainer(
-                    textEditingController: controller.usernameController,
-                    hint: "Username",
-                    keyboardType: TextInputType.text,
-                    validator: (value) => Validator.validateName(value ?? ""),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).shadowColor,
+                      ),
+                    ),
+                    height: getWidth(35, context),
+                    width: getWidth(35, context),
+                    alignment: Alignment.center,
+                    child: Visibility(
+                      visible: controller.loginWithPassword,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).splashColor,
+                          ),
+                          color: controller.loginWithPassword
+                              ? Theme.of(context).shadowColor
+                              : Colors.white,
+                        ),
+                        height: getWidth(25, context),
+                        width: getWidth(25, context),
+                      ),
+                    ),
                   ),
                   SizedBox(
-                    height: AppMethods.DEFAULT_PADDING / 2,
+                    width: getWidth(20, context),
                   ),
-                  TextFieldContainer(
-                    textEditingController: controller.emailController,
-                    hint: "Email",
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) => Validator.validateEmail(value ?? ""),
-                  ),
-                  SizedBox(
-                    height: AppMethods.DEFAULT_PADDING / 2,
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.passwordController,
-                    /*onToggle: () {
-                controller.togglePassword();
-              },*/
-                    hint: "Password",
-                    // showText: controller.showPassword,
-                    isLastField: true,
-                    validator: (value) => Validator.validateText(value ?? ""),
-                  ),
-                  SizedBox(
-                    height: AppMethods.DEFAULT_PADDING / 2,
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.confirmPasswordController,
-/*              onToggle: () {
-                controller.togglePassword();
-              },*/
-                    hint: "Confirm Password",
-                    // showText: controller.showPassword,
-                    isLastField: true,
-                    validator: (value) => Validator.validateText(value ?? ""),
-                  ),
-                  SizedBox(
-                    height: AppMethods.DEFAULT_PADDING,
-                  ),
-                  AppButton(
-                    onTap: () {
-                      controller.register(context);
-                    },
-                    text: "Register",
-                    isLoading: false,
-                  ),
+                  Text(
+                    "Continue with email",
+                    style: textStyle(
+                      context: context,
+                      color: Theme.of(context).shadowColor,
+                    ),
+                  )
                 ],
               ),
             ),
-            SizedBox(
-              height: AppMethods.DEFAULT_PADDING,
+            if (controller.loginWithPassword)
+              Form(
+                key: controller.formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextFieldContainer(
+                      textEditingController: controller.firstNameController,
+                      hint: "First Name",
+                      keyboardType: TextInputType.text,
+                      validator: (value) => Validator.validateName(value ?? ""),
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING / 2,
+                    ),
+                    TextFieldContainer(
+                      textEditingController: controller.lastNameController,
+                      hint: "Last Name",
+                      keyboardType: TextInputType.text,
+                      validator: (value) =>
+                          Validator.validateName((value ?? " ").trim()),
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING / 2,
+                    ),
+                    TextFieldContainer(
+                      textEditingController: controller.usernameController,
+                      hint: "Username",
+                      keyboardType: TextInputType.text,
+                      validator: (value) =>
+                          Validator.validateText((value ?? " ").trim()),
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING / 2,
+                    ),
+                    TextFieldContainer(
+                      textEditingController: controller.emailController,
+                      hint: "Email",
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) =>
+                          Validator.validateEmail((value ?? " ").trim()),
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING / 2,
+                    ),
+                    TextFieldContainer(
+                      textEditingController: controller.passwordController,
+                      /*onToggle: () {
+                controller.togglePassword();
+              },*/
+                      hint: "Password",
+                      // showText: controller.showPassword,
+                      isLastField: true,
+                      validator: (value) =>
+                          Validator.validateText((value ?? " ").trim()),
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING / 2,
+                    ),
+                    TextFieldContainer(
+                      textEditingController:
+                          controller.confirmPasswordController,
+/*              onToggle: () {
+                controller.togglePassword();
+              },*/
+                      hint: "Confirm Password",
+                      // showText: controller.showPassword,
+                      isLastField: true,
+                      validator: (value) =>
+                          Validator.validateText((value ?? " ").trim()),
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING,
+                    ),
+                    AppButton(
+                      onTap: () {
+                        controller.register(context);
+                      },
+                      text: "Register",
+                      isLoading: controller.isLoading,
+                    ),
+                    SizedBox(
+                      height: AppMethods.DEFAULT_PADDING,
+                    ),
+                  ],
+                ),
+              ),
+            Bounce(
+              onPressed: () {
+                controller.loginWithPassword = false;
+                controller.update();
+              },
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).shadowColor,
+                      ),
+                    ),
+                    height: getWidth(35, context),
+                    width: getWidth(35, context),
+                    alignment: Alignment.center,
+                    child: Visibility(
+                      visible: !controller.loginWithPassword,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).splashColor,
+                          ),
+                          color: !controller.loginWithPassword
+                              ? Theme.of(context).shadowColor
+                              : Colors.white,
+                        ),
+                        height: getWidth(25, context),
+                        width: getWidth(25, context),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: getWidth(20, context),
+                  ),
+                  Text(
+                    "Continue with phone",
+                    style: textStyle(
+                      context: context,
+                      color: Theme.of(context).shadowColor,
+                    ),
+                  )
+                ],
+              ),
             ),
+            if (!controller.loginWithPassword) ...[
+              SizedBox(
+                height: AppMethods.DEFAULT_PADDING,
+              ),
+              SizedBox(
+                height: AppMethods.DEFAULT_PADDING / 2,
+              ),
+              TextFieldContainer(
+                textEditingController: controller.phoneController,
+                onToggle: () {
+                  controller.togglePassword();
+                },
+                hint: "Registered number (without code)",
+                keyboardType: TextInputType.phone,
+                isLastField: true,
+              ),
+              SizedBox(
+                height: AppMethods.DEFAULT_PADDING,
+              ),
+              AppButton(
+                onTap: () {
+                  controller.sendOTP(context);
+                },
+                text: "Send OTP",
+                isLoading: controller.isLoading,
+              ),
+              SizedBox(
+                height: AppMethods.DEFAULT_PADDING,
+              ),
+            ],
             const LineTitleWidget(
               title: 'Or Login with',
             ),
@@ -138,6 +288,7 @@ class Small extends StatelessWidget {
                     controller.facebookLogin(context);
                   },
                   buttonType: Type.Facebook,
+                  isLoading: false,
                 ),
                 const SizedBox(
                   width: 10,
@@ -147,6 +298,7 @@ class Small extends StatelessWidget {
                     controller.googleLogin(context);
                   },
                   buttonType: Type.Google,
+                  isLoading: controller.isGLoading,
                 ),
               ],
             ),

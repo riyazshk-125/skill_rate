@@ -18,6 +18,7 @@ class AppButton extends StatelessWidget {
   bool haveShadow;
   bool haveBorder;
   double? horizontalPadding;
+  double? verticalPadding;
   MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
   bool haveWidth;
   ButtonThemeStyle buttonStyle = ButtonThemeStyle.Primary;
@@ -38,6 +39,7 @@ class AppButton extends StatelessWidget {
     this.haveShadow = false,
     this.haveBorder = false,
     this.horizontalPadding,
+    this.verticalPadding,
     this.haveWidth = true,
     this.buttonStyle = ButtonThemeStyle.Primary,
   }) : super(key: key);
@@ -48,6 +50,7 @@ class AppButton extends StatelessWidget {
       case ButtonThemeStyle.Primary:
         return Bounce(
           onPressed: () {
+            FocusManager.instance.primaryFocus?.unfocus();
             if (!isLoading) {
               onTap!();
             }
@@ -61,8 +64,8 @@ class AppButton extends StatelessWidget {
             ),
             alignment: Alignment.center,
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              vertical: 15,
+            padding: EdgeInsets.symmetric(
+              vertical: verticalPadding ?? 15,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,8 +103,8 @@ class AppButton extends StatelessWidget {
                 border: Border.all(color: Theme.of(context).backgroundColor)),
             alignment: Alignment.center,
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              vertical: 13,
+            padding: EdgeInsets.symmetric(
+              vertical: verticalPadding ?? 15,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

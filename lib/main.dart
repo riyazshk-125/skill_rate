@@ -1,9 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:skill_rate/helper/firebase_helper.dart';
 import 'package:skill_rate/screens/splash/splash_main.dart';
 
+import 'firebase_options.dart';
 import 'helper/api_helper/apis_holder.dart';
+import 'helper/global_controller.dart';
 import 'helper/prefs.dart';
 import 'helper/theme_data.dart';
 
@@ -12,7 +16,7 @@ String authKey = "xJpMGKGQD9EevKu";
 String authSecret = "5Oy5vFZzL4gXRDr";
 String accountKey = "T8KBZTqUsVHtuUvtKBdz";
 
-int userId = 0;
+// int userId = 0;
 
 /*Future<void> init() async {
   try {
@@ -26,7 +30,10 @@ int userId = 0;
 late ApiHolder apiHolder;
 late Prefs prefs;
 
+late GlobalController globalController;
+
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+late FirebaseHelper firebaseHelper;
 // late final NotificationService notificationService;
 
 void main() async {
@@ -34,8 +41,11 @@ void main() async {
   // notificationService.initializePlatformNotifications();
   WidgetsFlutterBinding.ensureInitialized();
   // await NotificationService().init();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   apiHolder = ApiHolder();
+  firebaseHelper = FirebaseHelper();
   /*apiHolder.callConstants().then((value) {
     if (value["key"] != null) {
       AppMethods.PAYMENT_MAP = value;
@@ -82,6 +92,8 @@ void main() async {
 
   Get.log(deviceToken ?? "");*/
   // await init();
+
+  globalController = Get.put<GlobalController>(GlobalController());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.white, // status bar color
     statusBarIconBrightness: Brightness.dark, // For Android (dark icons)

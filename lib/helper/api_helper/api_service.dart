@@ -5,15 +5,22 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-class ApiService extends GetConnect {
-  final String _BASE_URL = "https://thedooapp.in/api/";
+import '../../main.dart';
 
-  Future<Response<dynamic>> callApi(
-      String endPoint, ApiType apiType, String? userToken,
+class ApiService extends GetConnect {
+  final String _BASE_URL = "https://skillrate.doctecqclinic.com/api/";
+  final String _API_KEY =
+      "JDJ5JDEwJDg1OEpoT2pJLzhWdU5pdGhpY3JSU09YLjUwRWYyeUZ5T2Z2Q0drMU5xMHZPSXE1WWJkeU9x";
+
+  Future<Response<dynamic>> callApi(String endPoint, ApiType apiType,
       {dynamic body}) async {
+    String userToken = await prefs.getUserToken();
     Get.log("--------------------");
     Get.log(
-        "URL : $_BASE_URL$endPoint , body : ${body != null ? jsonEncode(body) : 'NA'}");
+        "URL : $_BASE_URL$endPoint , body : ${body != null ? jsonEncode(body) : 'NA'} : Header : ${jsonEncode({
+          'content-type': 'application/json',
+          'Authorization': userToken.isNotEmpty ? 'Bearer $userToken' : _API_KEY
+        })}");
     if (await InternetConnectionChecker().hasConnection) {
       switch (apiType) {
         case ApiType.GET:
@@ -23,17 +30,19 @@ class ApiService extends GetConnect {
               "$_BASE_URL$endPoint",
               headers: {
                 'content-type': 'application/json',
-                if (userToken != null && userToken.isNotEmpty)
-                  'Authorization': 'Bearer $userToken'
+                'Authorization':
+                    userToken.isNotEmpty ? 'Bearer $userToken' : _API_KEY
               },
             );
+            Get.log(
+                "URL : $_BASE_URL$endPoint , Response : ${jsonEncode(response.body)}");
             if (response.body != null) {
               return response;
             } else {
-              return callApi(endPoint, apiType, userToken, body: body);
+              return callApi(endPoint, apiType, body: body);
             }
           } on Exception {
-            return callApi(endPoint, apiType, userToken, body: body);
+            return callApi(endPoint, apiType, body: body);
             // throw FetchDataException('No Internet connection');
           }
 
@@ -45,24 +54,27 @@ class ApiService extends GetConnect {
               body ?? {},
               headers: {
                 'content-type': 'application/json',
-                if (userToken != null && userToken.isNotEmpty)
-                  'Authorization': 'Bearer $userToken'
+                'Authorization':
+                    userToken.isNotEmpty ? 'Bearer $userToken' : _API_KEY
               },
             );
+            Get.log(
+                "URL : $_BASE_URL$endPoint , Response : ${jsonEncode(response.body)}");
+
             if (response.body != null) {
               return response;
             } else {
-              return callApi(endPoint, apiType, userToken, body: body);
+              return callApi(endPoint, apiType, body: body);
             }
           } on Exception {
-            return callApi(endPoint, apiType, userToken, body: body);
+            return callApi(endPoint, apiType, body: body);
             ;
             // throw FetchDataException('No Internet connection');
           }
       }
     } else {
       // await Get.to<bool>(() => NetworkErrorPagePage());
-      return await callApi(endPoint, apiType, userToken);
+      return await callApi(endPoint, apiType);
     }
   }
 

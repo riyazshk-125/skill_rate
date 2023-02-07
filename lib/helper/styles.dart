@@ -58,29 +58,35 @@ TextStyle textStyleLogo({
 _getFontSize(FontSize fontSize, BuildContext context) {
   switch (fontSize) {
     case FontSize.H1:
-      return width(context) / 14;
-
+      return width(context) / 15;
     case FontSize.H2:
-      return width(context) / 18;
+      return width(context) / 16.36;
 
     case FontSize.H3:
-      return width(context) / 20;
+      return width(context) / 18;
 
     case FontSize.H4:
-      return width(context) / 22;
+      return width(context) / 20;
 
     case FontSize.H5:
-      return width(context) / 24;
+      return width(context) / 22.5;
 
     case FontSize.H6:
-      return width(context) / 26;
-    case FontSize.H7:
-      return width(context) / 28;
-
-    case FontSize.H8:
+      return width(context) / 25.71;
+    case FontSize.P1:
       return width(context) / 30;
+    case FontSize.P2:
+      return width(context) / 36;
+    case FontSize.P3:
+      return width(context) / 45;
+    case FontSize.P4:
+      return width(context) / 60;
+    case FontSize.P5:
+      return width(context) / 90;
+    case FontSize.P6:
+      return width(context) / 180;
     case FontSize.LOGO:
-      return width(context) / 16;
+      return width(context) / 14;
   }
 }
 
@@ -104,7 +110,11 @@ enum FontSize {
   H4,
   H5,
   H6,
-  H7,
-  H8,
+  P1,
+  P2,
+  P3,
+  P4,
+  P5,
+  P6,
   LOGO,
 }

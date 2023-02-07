@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 import '../models/login_response.dart';
+import '../models/my_skills_model.dart';
+import '../models/skill_detail_model.dart';
 import '../models/skill_model.dart';
+import '../models/user_model.dart';
 import 'api_service.dart';
 
 class ApiHolder {
@@ -13,142 +19,354 @@ class ApiHolder {
 
   Future<LoginResponseModel> login(
       {String? username, String? email, String? password}) async {
-    Map<String, dynamic> body = {
-      "username": username ?? "",
-      "email": email ?? "",
-      "password": password ?? ""
-    };
-    //Call API
-    if (false) {
-      // Fluttertoast.showToast(msg: response.body["message"].toString());
-      Fluttertoast.showToast(msg: "Invalid Credentials");
+    try {
+      Map<String, dynamic> body = {
+        "username": username ?? "",
+        "email": email ?? "",
+        "password": password ?? ""
+      };
+      //Call API
+      var response =
+          await _apiService.callApi("auth/userLogin", ApiType.POST, body: body);
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return LoginResponseModel();
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return LoginResponseModel();
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return LoginResponseModel();
+      } else {
+        return LoginResponseModel.fromJson(response.body["data"]);
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
       return LoginResponseModel();
-    } else {
-      return LoginResponseModel.fromJson({
-        "email": "mehulkhatiwala@gmail.com",
-        "token":
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMGQ5MGJhODgxYWNjMjliZTdmZTFiZGRlZGE4NWFhM2E5Y2EyYmZlNDQwNjhhNjMyMzBjY2VmMTkyNWQwOTcyNmMwYmFlMzYzNDMzNTRkNzAiLCJpYXQiOjE2NzA5NDgyMTguMjY4NTUxLCJuYmYiOjE2NzA5NDgyMTguMjY4NTYyLCJleHAiOjE3MDI0ODQyMTguMDM0MjgzLCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.lDLadvrfme88ysx789VSON2tsAoOYj-kbHgayft2fAdsMBSdRX2dKTLhb8nWHgwuq5m1gVIYH2k6CPN49vJsnd0n-HwIJUKF5RRtU0IgaghZYEpBAVnt2QLLgJtlogvTmMPPxQWVKDMbk-MUvlDSNyx14zMpKekqgoQMhecZK0DVvc3sFWQhmFfigSJ15NcN3t2ZHl1uZduKQQo57c2FOJ7Bw6NOdULl9FaglB7yQNzOo6xfVHsXav5piAJ349hxUyRNWwlYk6c3p6SR0fSPmpb2wY0sVgJTzN00Ur93nhcbR3hsPfbi7t3XhTwrKbVLxyxmiVe8DratnFctzAOTjc9qJdny9TkrOzUS2zu2xwehOY4xc4DPPXb5j5iBiqO_vLJGj4vFHVdHCMqxHpBBFztpZ-cWDsY-Jzwx4MbL4c9tScwsgORQtv8w2ULN2t7H_QhIm6FMRN-SCfCsW-FTeok527Tfrw0MukmZ_QrwSkdzIAF1I1YzUejI4FfrhSriZJ_u1EbUT31glFHHmka-Ob02mV5-zv2VFT-jV8rwKuyVxMgrQRC6BW2HojRAx_ff03WQhUvXqX3PpoGFnUiPmwmDEqQY_Had5LD29_VXaUrjiv0K8w1uNY72QdQVfjePo1ot0iMvNe5EPD6Ok7DcnnFQEFMJkNCL5-9607z409c",
-        "last_login": "2022-12-13 21:46:57"
-      });
     }
   }
 
-  Future<String> register({
+  Future<LoginResponseModel> checkPhone({String? phone}) async {
+    try {
+      Map<String, dynamic> body = {"mobile": phone ?? ""};
+      //Call API
+      var response = await _apiService
+          .callApi("auth/userMobileExists", ApiType.POST, body: body);
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return LoginResponseModel();
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return LoginResponseModel();
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return LoginResponseModel();
+      } else {
+        return LoginResponseModel.fromJson(response.body["data"]);
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return LoginResponseModel();
+    }
+  }
+
+  Future<LoginResponseModel> register({
     String? firstName,
     String? lastName,
     String? username,
     String? email,
     String? password,
+    String? phone,
     String? user_login_type,
   }) async {
-    Map<String, dynamic> body = {
-      "first_name": firstName ?? "",
-      "last_name": lastName ?? "",
-      "username": username ?? "",
-      "email": email ?? "",
-      "password": password ?? "",
-      "user_login_type": user_login_type ?? "1"
-    };
-    //Call API
-    if (false) {
-      // Fluttertoast.showToast(msg: response.body["message"].toString());
-      Fluttertoast.showToast(msg: "Invalid Credentials");
-      return "";
-    } else {
-      var response = {"inserted_id": 17};
-      return "${response["inserted_id"]}";
-    }
-  }
-
-  Future<List<SkillModel>> callGetInterestsApi() async {
-    if (false) {
-      // Fluttertoast.showToast(msg: response.body["errors"].toString());
-      Fluttertoast.showToast(msg: "Unauthenticated requests");
-      return [];
-    } else {
-      List<dynamic> tempDynamicList = List<dynamic>.from([
-        {
-          "id": 2,
-          "skill_category_id": 7,
-          "name": "Python",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 3,
-          "skill_category_id": 7,
-          "name": "PHP",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 4,
-          "skill_category_id": 7,
-          "name": "jQuery",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 5,
-          "skill_category_id": 7,
-          "name": "Javascript",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 6,
-          "skill_category_id": 7,
-          "name": "ES6",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 7,
-          "skill_category_id": 7,
-          "name": "HTML5",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 8,
-          "skill_category_id": 7,
-          "name": "React",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 9,
-          "skill_category_id": 7,
-          "name": "React Native",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 11,
-          "skill_category_id": 7,
-          "name": "Laravel",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 12,
-          "skill_category_id": 7,
-          "name": "Angular JS",
-          "get_skill_category_name": {"id": 7, "category_name": "Coding"}
-        },
-        {
-          "id": 13,
-          "skill_category_id": 8,
-          "name": "Integrity",
-          "get_skill_category_name": {"id": 8, "category_name": "Value"}
-        },
-        {
-          "id": 14,
-          "skill_category_id": 8,
-          "name": "Innovation",
-          "get_skill_category_name": {"id": 8, "category_name": "Value"}
-        }
-      ]);
-      List<SkillModel> list = [];
-      for (var item in tempDynamicList) {
-        list.add(SkillModel.fromJson(item));
+    try {
+      Map<String, dynamic> body = {
+        "first_name": firstName ?? "",
+        "last_name": lastName ?? "",
+        "username": username ?? "",
+        if (email != null) "email": email,
+        if (password != null) "password": password,
+        if (phone != null) "mobile": phone,
+        "user_login_type": user_login_type ?? "1"
+      };
+      //Call API
+      var response = await _apiService
+          .callApi("auth/userRegistration", ApiType.POST, body: body);
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return LoginResponseModel();
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return LoginResponseModel();
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return LoginResponseModel();
+      } else {
+        return LoginResponseModel.fromJson(response.body["data"]);
       }
-      return list;
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return LoginResponseModel();
     }
   }
 
-  /*Future<VerifyPhoneNumberModel> callVerifyPhoneNumberApi(
+  Future<UserModel> userProfile() async {
+    //Call API
+    try {
+      var response =
+          await _apiService.callApi("users/userProfile", ApiType.GET);
+      print(jsonEncode(response.body));
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return UserModel();
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return UserModel();
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return UserModel();
+      } else {
+        return UserModel.fromJson(response.body["data"]);
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return UserModel();
+    }
+  }
+
+  Future<List<UserModel>> callOthersUser(
+      int page, void Function(int totalItem) totalCount) async {
+    try {
+      var response = await _apiService.callApi(
+          "users/getOtherUsersList?page=$page", ApiType.GET);
+      Get.log(jsonEncode(response.body));
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return [];
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return [];
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return [];
+      } else {
+        totalCount(response.body["data"]["total"]);
+        List<dynamic> tempDynamicList =
+            List<dynamic>.from(response.body["data"]["data"]);
+        List<UserModel> list = [];
+        for (var item in tempDynamicList) {
+          list.add(UserModel.fromJson(item));
+        }
+        return list;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return [];
+    }
+  }
+
+  Future<List<SkillModel>> callSkills() async {
+    try {
+      var response =
+          await _apiService.callApi("auth/getAllSkills", ApiType.GET);
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return [];
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return [];
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return [];
+      } else {
+        List<dynamic> tempDynamicList =
+            List<dynamic>.from(response.body["data"]);
+        List<SkillModel> list = [];
+        for (var item in tempDynamicList) {
+          list.add(SkillModel.fromJson(item));
+        }
+        return list;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return [];
+    }
+  }
+
+  Future<List<MySkillsModel>> callMySkills() async {
+    try {
+      var response =
+          await _apiService.callApi("users/viewMySkills", ApiType.GET);
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return [];
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return [];
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return [];
+      } else {
+        List<dynamic> tempDynamicList =
+            List<dynamic>.from(response.body["data"]);
+        List<MySkillsModel> list = [];
+        for (var item in tempDynamicList) {
+          list.add(MySkillsModel.fromJson(item));
+        }
+        return list;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return [];
+    }
+  }
+
+  Future<bool> saveUserSkills(String skills, bool isFirst) async {
+    try {
+      var body = {"skills": skills};
+      //Call API
+      var response = await _apiService.callApi(
+        isFirst ? "users/addMySkills" : "users/editMySkills",
+        ApiType.POST,
+        body: body,
+      );
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return false;
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return false;
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return false;
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return true;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return false;
+    }
+  }
+
+  Future<bool> addUpdateOtherUserSkills(
+    double rating,
+    String review,
+    int? userSkillId,
+  ) async {
+    try {
+      var body = {
+        if (userSkillId != null) "user_skill_id": userSkillId,
+        "rating": "$rating",
+        if (review.isNotEmpty) "review": review
+      };
+      Get.log(jsonEncode(body));
+      //Call API
+      var response = await _apiService.callApi(
+        "users/addUpdateUserSkillRating",
+        ApiType.POST,
+        body: body,
+      );
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return false;
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return false;
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return false;
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return true;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return false;
+    }
+  }
+
+  Future<UserModel> otherUserProfile(int? userId) async {
+    //Call API
+    try {
+      var response = await _apiService.callApi(
+          "users/getOtherUserProfile/$userId", ApiType.GET);
+      print(jsonEncode(response.body));
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return UserModel();
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return UserModel();
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return UserModel();
+      } else {
+        try {
+          return UserModel.fromJson(response.body["data"][0]);
+        } catch (e) {
+          return UserModel();
+        }
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return UserModel();
+    }
+  }
+
+  Future<SkillDetailModel> getSkillDetail(String? skillId) async {
+    //Call API
+    try {
+      var response = await _apiService.callApi(
+          "users/loadOtherUserSkillData/$skillId", ApiType.GET);
+
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return SkillDetailModel();
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return SkillDetailModel();
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return SkillDetailModel();
+      } else {
+        /*try {
+        return SkillDetailModel.fromJson(response.body["data"][0]);
+      } catch (e) {
+        print(e);
+        return SkillDetailModel();
+      }*/
+        return SkillDetailModel.fromJson(response.body["data"]);
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return SkillDetailModel();
+    }
+  }
+
+/*Future<VerifyPhoneNumberModel> callVerifyPhoneNumberApi(
       String phoneNumber, String? appSignature) async {
     Map<String, dynamic> body = {
       "phone_number": phoneNumber,

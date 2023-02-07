@@ -61,53 +61,182 @@ class Small extends StatelessWidget {
           SizedBox(
             height: AppMethods.DEFAULT_PADDING,
           ),
-          TextFieldContainer(
-            textEditingController: controller.emailController,
-            hint: "Enter your email",
-            keyboardType: TextInputType.emailAddress,
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING / 2,
-          ),
-          TextFieldContainer(
-            textEditingController: controller.passwordController,
-            onToggle: () {
-              controller.togglePassword();
+          Bounce(
+            onPressed: () {
+              controller.loginWithPassword = true;
+              controller.update();
             },
-            hint: "Enter your password",
-            showText: controller.showPassword,
-            isLastField: true,
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING / 2,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Bounce(
-                onPressed: () {
-                  Get.to(() => const ForgotPasswordEmailScreen());
-                },
-                child: Text(
-                  "Forgot Password?",
-                  style: textStyle(
-                    context: context,
-                    color: Theme.of(context).focusColor,
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).shadowColor,
+                    ),
+                  ),
+                  height: getWidth(35, context),
+                  width: getWidth(35, context),
+                  alignment: Alignment.center,
+                  child: Visibility(
+                    visible: controller.loginWithPassword,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).splashColor,
+                        ),
+                        color: controller.loginWithPassword
+                            ? Theme.of(context).shadowColor
+                            : Colors.white,
+                      ),
+                      height: getWidth(25, context),
+                      width: getWidth(25, context),
+                    ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  width: getWidth(20, context),
+                ),
+                Text(
+                  "Continue with email",
+                  style: textStyle(
+                    context: context,
+                    color: Theme.of(context).shadowColor,
+                  ),
+                )
+              ],
+            ),
           ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING,
-          ),
-          AppButton(
-            onTap: () {
-              controller.login(context);
+          if (controller.loginWithPassword) ...[
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+            TextFieldContainer(
+              textEditingController: controller.emailController,
+              hint: "Enter your email",
+              keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING / 2,
+            ),
+            TextFieldContainer(
+              textEditingController: controller.passwordController,
+              onToggle: () {
+                controller.togglePassword();
+              },
+              hint: "Enter your password",
+              showText: controller.showPassword,
+              isLastField: true,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING / 2,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Bounce(
+                  onPressed: () {
+                    Get.to(() => const ForgotPasswordEmailScreen());
+                  },
+                  child: Text(
+                    "Forgot Password?",
+                    style: textStyle(
+                      context: context,
+                      color: Theme.of(context).focusColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+            AppButton(
+              onTap: () {
+                controller.login(context);
+              },
+              text: "Login",
+              isLoading: controller.isLoading,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+          ],
+          Bounce(
+            onPressed: () {
+              controller.loginWithPassword = false;
+              controller.update();
             },
-            text: "Login",
-            isLoading: false,
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).shadowColor,
+                    ),
+                  ),
+                  height: getWidth(35, context),
+                  width: getWidth(35, context),
+                  alignment: Alignment.center,
+                  child: Visibility(
+                    visible: !controller.loginWithPassword,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).splashColor,
+                        ),
+                        color: !controller.loginWithPassword
+                            ? Theme.of(context).shadowColor
+                            : Colors.white,
+                      ),
+                      height: getWidth(25, context),
+                      width: getWidth(25, context),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: getWidth(20, context),
+                ),
+                Text(
+                  "Continue with phone",
+                  style: textStyle(
+                    context: context,
+                    color: Theme.of(context).shadowColor,
+                  ),
+                )
+              ],
+            ),
           ),
+          if (!controller.loginWithPassword) ...[
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING / 2,
+            ),
+            TextFieldContainer(
+              textEditingController: controller.phoneController,
+              onToggle: () {
+                controller.togglePassword();
+              },
+              hint: "Registered number (without code)",
+              keyboardType: TextInputType.phone,
+              isLastField: true,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+            AppButton(
+              onTap: () {
+                controller.sendOTP(context);
+              },
+              text: "Send OTP",
+              isLoading: controller.isLoading,
+            ),
+          ],
           SizedBox(
             height: AppMethods.DEFAULT_PADDING,
           ),
@@ -125,6 +254,7 @@ class Small extends StatelessWidget {
                   controller.facebookLogin(context);
                 },
                 buttonType: Type.Facebook,
+                isLoading: false,
               ),
               const SizedBox(
                 width: 10,
@@ -134,6 +264,7 @@ class Small extends StatelessWidget {
                   controller.googleLogin(context);
                 },
                 buttonType: Type.Google,
+                isLoading: controller.isGLoading,
               ),
             ],
           ),

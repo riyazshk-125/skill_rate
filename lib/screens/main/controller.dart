@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:skill_rate/helper/date_format_helper.dart';
+import 'package:skill_rate/main.dart';
 
-import '../../helper/temp_model/temp_users_list_model.dart';
+import '../../helper/models/user_model.dart';
 
 class MainController extends GetxController {
   bool showPassword = false;
   TextEditingController searchController = TextEditingController();
-  List<TempUsersListModel> users = [];
+  List<UserModel> users = [];
+  List<UserModel> searchedUsers = [];
   List<Color> colors = [
     Color(0xFF95CC81),
     Color(0xFF166FF6),
@@ -15,10 +16,17 @@ class MainController extends GetxController {
     Color(0xFFFFD064),
     Color(0xFF5055A0),
   ];
+  bool isLoading = false;
+  int page = 1;
+  ScrollController scrollController = ScrollController();
+  int totalItem = 0;
 
   @override
   void onInit() {
-    addUsers();
+    getMyProfile();
+    scrollController.addListener(_onScrollData);
+    getApiData(true);
+
     super.onInit();
   }
 
@@ -27,46 +35,58 @@ class MainController extends GetxController {
     super.dispose();
   }
 
-  void textChange(text) {}
-
-  void addUsers() {
-    List<dynamic> tempDynamicList = List<dynamic>.from([
-      {
-        "name": "Arit Patel",
-        "message": "Categori",
-        "date": "07/12/2022",
-        "unread_count": 1
-      },
-      {
-        "name": "Darshan",
-        "message": "How is it going?",
-        "date": "06/12/2022",
-        "unread_count": null
-      },
-      {
-        "name": "Doctor",
-        "message": "All right, noted",
-        "date": "05/12/2022",
-        "unread_count": 2
-      },
-      {
-        "name": "Engineer",
-        "message": "How is it going?",
-        "date": "04/12/2022",
-        "unread_count": null
-      },
-      {
-        "name": "Prashant",
-        "message": "How is it going?",
-        "date": "03/12/2022",
-        "unread_count": null
-      }
-    ]);
-    for (var item in tempDynamicList) {
-      users.add(TempUsersListModel.fromJson(item));
+  void textChange(text) {
+    if (text.isEmpty) {
+      searchedUsers = users;
+      update();
+    } else {
+      var searched = users
+          .where((e) =>
+              (e.firstName != null &&
+                  e.firstName!.toLowerCase().contains(text)) ||
+              (e.lastName != null &&
+                  e.lastName!.toLowerCase().contains(text)) ||
+              (e.username != null &&
+                  e.username!.toLowerCase().contains(text)) ||
+              (e.email != null && e.email!.toLowerCase().contains(text)))
+          .toList();
+      searchedUsers = searched;
+      update();
     }
+  }
 
-    users[0].date =
-        DateFormatHelper.convertDateFromDate(DateTime.now(), "dd/MM/yyyy");
+  void getApiData(bool isFirst) async {
+    if (isFirst) {
+      isLoading = true;
+      update();
+    }
+    /*UserModel myProfile = await apiHolder.userProfile();
+    myProfile.isCurrent = true;
+    users.add(myProfile);
+
+    update();*/
+
+    List<UserModel> otherUsers =
+        await apiHolder.callOthersUser(page, (totalItem) {
+      this.totalItem = totalItem;
+    });
+    users.addAll(otherUsers);
+    searchedUsers = users;
+    isLoading = false;
+    update();
+  }
+
+  void _onScrollData() async {
+    if (scrollController.position.maxScrollExtent == scrollController.offset) {
+      if (users.length < (totalItem) && !isLoading) {
+        page++;
+        getApiData(false);
+      }
+    }
+  }
+
+  void getMyProfile() async {
+    UserModel myProfile = await apiHolder.userProfile();
+    await prefs.setUserModel(myProfile);
   }
 }

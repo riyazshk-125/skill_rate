@@ -1,6 +1,6 @@
 class SkillModel {
   int? id;
-  int? skillCategoryId;
+  String? skillCategoryId;
   String? name;
   GetSkillCategoryName? getSkillCategoryName;
 

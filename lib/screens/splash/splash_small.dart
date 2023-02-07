@@ -21,55 +21,59 @@ class SplashSmall extends StatelessWidget {
       color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.symmetric(horizontal: AppMethods.DEFAULT_PADDING),
       alignment: Alignment.bottomCenter,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-            "asset/image/app_logo.png",
-            width: width(context) / 3.125,
-            fit: BoxFit.contain,
-          ),
-          Text(
-            "SKILLRATE",
-            style: textStyleLogo(context: context, fontSize: FontSize.LOGO),
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING * 2,
-          ),
-          AppButton(
-            onTap: () {
-              Get.to(() => LoginScreen());
-            },
-            text: "Login",
-            isLoading: false,
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING,
-          ),
-          AppButton(
-            onTap: () {
-              Get.to(() => RegisterScreen());
-            },
-            text: "Register",
-            buttonStyle: ButtonThemeStyle.Bordered,
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING,
-          ),
-          Text(
-            "Continue as a guest",
-            style: textStyle(
-              context: context,
-              color: Theme.of(context).primaryColor,
-              isBold: true,
-              haveUnderline: true,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 500),
+        opacity: controller.show ? 1 : 0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              "asset/image/app_logo.png",
+              width: width(context) / 3.125,
+              fit: BoxFit.contain,
             ),
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING,
-          ),
-        ],
+            Text(
+              "SKILLRATE",
+              style: textStyleLogo(context: context, fontSize: FontSize.LOGO),
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING * 2,
+            ),
+            AppButton(
+              onTap: () {
+                Get.to(() => LoginScreen());
+              },
+              text: "Login",
+              isLoading: false,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+            AppButton(
+              onTap: () {
+                Get.to(() => RegisterScreen());
+              },
+              text: "Register",
+              buttonStyle: ButtonThemeStyle.Bordered,
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+            Text(
+              "Continue as a guest",
+              style: textStyle(
+                context: context,
+                color: Theme.of(context).primaryColor,
+                isBold: true,
+                haveUnderline: true,
+              ),
+            ),
+            SizedBox(
+              height: AppMethods.DEFAULT_PADDING,
+            ),
+          ],
+        ),
       ),
     );
   }

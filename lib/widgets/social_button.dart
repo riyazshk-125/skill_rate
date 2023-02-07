@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'flutter_bounce.dart';
 
 class SocialButton extends StatelessWidget {
   void Function() onPressed;
   Type buttonType;
+  bool isLoading;
 
   SocialButton({
     Key? key,
     required this.onPressed,
     required this.buttonType,
+    required this.isLoading,
   }) : super(key: key);
 
   @override
@@ -29,10 +32,15 @@ class SocialButton extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
-        child: SvgPicture.asset(
-          getAsset(buttonType),
-          width: 30,
-        ),
+        child: isLoading
+            ? LoadingAnimationWidget.staggeredDotsWave(
+                color: Theme.of(context).primaryColor,
+                size: 30,
+              )
+            : SvgPicture.asset(
+                getAsset(buttonType),
+                width: 30,
+              ),
       ),
     );
   }
