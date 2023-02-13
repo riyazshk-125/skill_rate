@@ -1,13 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/widgets/button.dart';
 import 'package:skill_rate/widgets/text_field_container.dart';
 
 import '../../helper/styles.dart';
 import '../../widgets/back_button.dart';
-import '../forgot_password_otp/main.dart';
 import '../login/main.dart';
 import 'controller.dart';
 
@@ -51,7 +49,7 @@ class Small extends StatelessWidget {
               ),
               AppButton(
                 onTap: () {
-                  Get.to(() => ForgotPasswordOTPScreen());
+                  controller.goToOTPScreen(context);
                 },
                 text: "Send Code",
                 isLoading: false,

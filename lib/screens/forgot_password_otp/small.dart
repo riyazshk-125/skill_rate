@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/widgets/button.dart';
 import 'package:skill_rate/widgets/otp_widgets/otp_field.dart';
@@ -10,7 +9,6 @@ import 'package:skill_rate/widgets/otp_widgets/style.dart';
 import '../../helper/styles.dart';
 import '../../widgets/back_button.dart';
 import '../login/main.dart';
-import '../password_change/main.dart';
 import 'controller.dart';
 
 class Small extends StatelessWidget {
@@ -99,7 +97,7 @@ class Small extends StatelessWidget {
           ),
           AppButton(
             onTap: () {
-              Get.to(() => PasswordChangeScreen());
+              controller.verifyOTP(context);
             },
             text: "Verify",
             isLoading: false,

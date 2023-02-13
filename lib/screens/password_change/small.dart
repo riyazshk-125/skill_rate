@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/widgets/button.dart';
 
@@ -7,7 +6,6 @@ import '../../helper/styles.dart';
 import '../../helper/validation_helper.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/text_field_container.dart';
-import '../password_change_success/main.dart';
 import 'controller.dart';
 
 class Small extends StatelessWidget {
@@ -103,10 +101,10 @@ class Small extends StatelessWidget {
           ),
           AppButton(
             onTap: () {
-              Get.to(() => PasswordChangeSuccessScreen());
+              controller.changePassword(context);
             },
             text: "Reset Password",
-            isLoading: false,
+            isLoading: controller.isLoading,
           ),
         ],
       ),

@@ -82,6 +82,7 @@ class ApiHolder {
     String? password,
     String? phone,
     String? user_login_type,
+    String? id,
   }) async {
     try {
       Map<String, dynamic> body = {
@@ -91,6 +92,7 @@ class ApiHolder {
         if (email != null) "email": email,
         if (password != null) "password": password,
         if (phone != null) "mobile": phone,
+        if (id != null) "id": id,
         "user_login_type": user_login_type ?? "1"
       };
       //Call API
@@ -113,6 +115,40 @@ class ApiHolder {
       Get.log("$e");
       Fluttertoast.showToast(msg: "Something wrong");
       return LoginResponseModel();
+    }
+  }
+
+  Future<bool> changePassword({
+    String? email,
+    String? password,
+  }) async {
+    try {
+      Map<String, dynamic> body = {
+        "email": email ?? "",
+        "password": password ?? "",
+        "setpassword": "1",
+      };
+      //Call API
+      var response = await _apiService
+          .callApi("auth/forgetPassword", ApiType.POST, body: body);
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return false;
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return false;
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return false;
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return true;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return false;
     }
   }
 
@@ -431,4 +467,33 @@ class ApiHolder {
   }
 
   */
+
+  Future<String> predefinedPage({
+    String? endPoint,
+  }) async {
+    try {
+      Map<String, dynamic> body = {"page_name": endPoint};
+      //Call API
+      var response = await _apiService
+          .callApi("users/viewPreDefinedPages", ApiType.POST, body: body);
+      Get.log(jsonEncode(response.body));
+      if (response.statusCode == 500) {
+        Fluttertoast.showToast(msg: "Server Error");
+        return "";
+      } else if (response.statusCode == 400) {
+        var keys = response.body["data"].keys;
+        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        return "";
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return "";
+      } else {
+        return response.body["data"]["code"];
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return "";
+    }
+  }
 }

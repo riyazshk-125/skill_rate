@@ -6,6 +6,7 @@ class UserModel {
   String? lastName;
   String? username;
   String? email;
+  String? mobile;
   String? profileUrl;
   String? lastLogin;
   List<MySkillsModel>? userSkills;
@@ -18,6 +19,7 @@ class UserModel {
       this.email,
       this.profileUrl,
       this.lastLogin,
+      this.mobile,
       this.userSkills});
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class UserModel {
     lastName = json['last_name'];
     username = json['username'];
     email = json['email'];
+    mobile = json['mobile'];
     profileUrl = json['profile_url'];
     lastLogin = json['last_login'];
     if (json['user_skills'] != null) {
@@ -43,6 +46,7 @@ class UserModel {
     data['last_name'] = lastName;
     data['username'] = username;
     data['email'] = email;
+    data['mobile'] = mobile;
     data['profile_url'] = profileUrl;
     data['last_login'] = lastLogin;
     if (userSkills != null) {

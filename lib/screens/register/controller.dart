@@ -83,6 +83,7 @@ class RegisterController extends GetxController {
         lastName: googleSignInAccount.displayName?.split(" ").last,
         email: googleSignInAccount.email,
         user_login_type: "2",
+        id: googleSignInAccount.id,
       );
       isGLoading = false;
       update();

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/helper/styles.dart';
+import 'package:skill_rate/screens/predefined_page/main.dart';
 import 'package:skill_rate/screens/profile/main.dart';
 import 'package:skill_rate/widgets/app_drawer/controller.dart';
 import 'package:skill_rate/widgets/button.dart';
@@ -77,8 +78,33 @@ class AppDrawerView extends StatelessWidget {
                         },
                       ),
                     menuItem(context, "Setting", () => {}),
-                    menuItem(context, "Contact us", () => {}),
-                    menuItem(context, "Help and Feedback", () => {}),
+                    menuItem(
+                        context,
+                        "Contact us",
+                        () => {
+                              Get.to(() => PredefinedPageScreen(), arguments: {
+                                "end": "contact-us",
+                                "title": "Contact us"
+                              })
+                            }),
+                    menuItem(
+                        context,
+                        "Help and Feedback",
+                        () => {
+                              Get.to(() => PredefinedPageScreen(), arguments: {
+                                "end": "about-us",
+                                "title": "Help and Feedback"
+                              })
+                            }),
+                    menuItem(
+                        context,
+                        "Privacy Policy",
+                        () => {
+                              Get.to(() => PredefinedPageScreen(), arguments: {
+                                "end": "privacy-policy",
+                                "title": "Privacy Policy"
+                              })
+                            }),
                     menuItem(context, "Security", () => {}),
                   ],
                 ),

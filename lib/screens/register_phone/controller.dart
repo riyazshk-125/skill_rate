@@ -40,6 +40,7 @@ class RegisterPhoneController extends GetxController {
         username: usernameController.text.trim(),
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
+        phone: phoneController.text.trim(),
         user_login_type: "6");
     isLoading = false;
     update();

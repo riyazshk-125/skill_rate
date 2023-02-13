@@ -48,7 +48,8 @@ class MainController extends GetxController {
                   e.lastName!.toLowerCase().contains(text)) ||
               (e.username != null &&
                   e.username!.toLowerCase().contains(text)) ||
-              (e.email != null && e.email!.toLowerCase().contains(text)))
+              (e.email != null && e.email!.toLowerCase().contains(text)) ||
+              (e.mobile != null && e.mobile!.toLowerCase().contains(text)))
           .toList();
       searchedUsers = searched;
       update();
