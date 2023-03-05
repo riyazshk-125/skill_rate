@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/helper/models/user_model.dart';
 import 'package:skill_rate/main.dart';
@@ -15,6 +16,7 @@ class AppDrawerController extends GetxController {
 
   void logout() async {
     await prefs.clearUser();
+    Fluttertoast.showToast(msg: "User logged out successfully");
     Get.offAll(() => SplashScreen());
   }
 

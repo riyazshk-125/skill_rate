@@ -7,20 +7,25 @@ class UserModel {
   String? username;
   String? email;
   String? mobile;
+  String? password;
   String? profileUrl;
   String? lastLogin;
+  String? token;
   List<MySkillsModel>? userSkills;
 
-  UserModel(
-      {this.id,
-      this.firstName,
-      this.lastName,
-      this.username,
-      this.email,
-      this.profileUrl,
-      this.lastLogin,
-      this.mobile,
-      this.userSkills});
+  UserModel({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.username,
+    this.email,
+    this.profileUrl,
+    this.lastLogin,
+    this.mobile,
+    this.userSkills,
+    this.password,
+    this.token,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

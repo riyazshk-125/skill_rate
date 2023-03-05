@@ -78,7 +78,7 @@ class Small extends StatelessWidget {
                   hint: "New Password",
                   // showText: controller.showPassword,
                   isLastField: true,
-                  validator: (value) => Validator.validateText(value ?? ""),
+                  validator: (value) => Validator.validatePassword(value ?? ""),
                 ),
                 SizedBox(
                   height: AppMethods.DEFAULT_PADDING / 2,
@@ -91,7 +91,7 @@ class Small extends StatelessWidget {
                   hint: "Confirm Password",
                   // showText: controller.showPassword,
                   isLastField: true,
-                  validator: (value) => Validator.validateText(value ?? ""),
+                  validator: (value) => Validator.validatePassword(value ?? ""),
                 ),
               ],
             ),

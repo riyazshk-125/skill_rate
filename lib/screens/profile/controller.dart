@@ -16,6 +16,7 @@ class ProfileController extends GetxController {
   UserModel userModel = UserModel();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController searchSkillController = TextEditingController();
 
   List<SkillModel> skills = [];
@@ -23,10 +24,14 @@ class ProfileController extends GetxController {
   List<MySkillsModel> mySkills = [];
   bool isSkillSaving = false;
   bool isLoading = false;
+  bool isReadOnlyEmail = false;
+  bool isReadOnlyMobile = false;
 
   @override
   void onInit() {
     userModel = Get.arguments;
+    isReadOnlyEmail = userModel.email != null && userModel.email!.isNotEmpty;
+    isReadOnlyMobile = userModel.mobile != null && userModel.mobile!.isNotEmpty;
     setValues();
     getMySkills();
 
@@ -41,6 +46,7 @@ class ProfileController extends GetxController {
   void setValues() {
     nameController.text = getUserName(userModel);
     emailController.text = userModel.email ?? "";
+    phoneController.text = userModel.mobile ?? "";
     update();
   }
 
@@ -59,6 +65,9 @@ class ProfileController extends GetxController {
   void addSkills(BuildContext context) async {
     selectedSkill.clear();
     searchSkillController.clear();
+    skills = List.generate(
+        globalController.skills.length > 5 ? 5 : globalController.skills.length,
+        (index) => globalController.skills[index]);
     if (mySkills.isNotEmpty) {
       for (var item in mySkills) {
         selectedSkill.add(item.userSkillsName?.id ?? 0);
@@ -271,4 +280,6 @@ class ProfileController extends GetxController {
     isLoading = false;
     update();
   }
+
+  void updateProfile(BuildContext context) async {}
 }

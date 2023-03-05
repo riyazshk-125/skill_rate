@@ -89,8 +89,9 @@ class SkillRatingDetailController extends GetxController {
     update();
   }
 
-  void openAddRatingDialog(BuildContext context, Data? data) async {
-    double rating = 0.0;
+  void openAddRatingDialog(
+      BuildContext context, Data? data, double value) async {
+    double rating = value;
     if (data != null) {
       reviewController.text = data.review ?? "";
       rating = double.parse(data.rating ?? "0.0");

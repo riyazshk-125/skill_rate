@@ -8,7 +8,6 @@ import 'package:skill_rate/widgets/otp_widgets/style.dart';
 
 import '../../helper/styles.dart';
 import '../../widgets/back_button.dart';
-import '../login/main.dart';
 import 'controller.dart';
 
 class Small extends StatelessWidget {
@@ -58,7 +57,7 @@ class Small extends StatelessWidget {
             height: AppMethods.DEFAULT_PADDING,
           ),
           Text(
-            "Enter the verification code we just sent on your phone number.",
+            "Enter the verification code we just sent on your ${controller.userModel.email != null ? 'email' : 'phone number'}.",
             style: textStyle(
               context: context,
               color: Theme.of(context).focusColor,
@@ -102,39 +101,54 @@ class Small extends StatelessWidget {
             text: "Verify",
             isLoading: controller.isLoading,
           ),
-          Expanded(
-            child: SizedBox(
-              height: AppMethods.DEFAULT_PADDING,
-            ),
+          SizedBox(
+            height: AppMethods.DEFAULT_PADDING,
           ),
-          RichText(
-              text: TextSpan(
-            children: [
-              TextSpan(
-                text: "Didn't received code? ",
-                style: textStyle(
-                  context: context,
-                ),
-              ),
-              TextSpan(
-                text: 'Resend',
-                style: textStyle(
-                  context: context,
-                  color: Theme.of(context).primaryColor,
-                  isBold: true,
-                  haveUnderline: true,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LoginScreen()),
-                        ModalRoute.withName('/'));
-                  },
-              ),
-            ],
-          )),
+          controller.timerText > 0
+              ? RichText(
+                  text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Please Wait ",
+                      style: textStyle(
+                        context: context,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '${controller.timerText}',
+                      style: textStyle(
+                        context: context,
+                        color: Theme.of(context).primaryColor,
+                        isBold: true,
+                        haveUnderline: true,
+                      ),
+                    ),
+                  ],
+                ))
+              : RichText(
+                  text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Didn't received code? ",
+                      style: textStyle(
+                        context: context,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Resend',
+                      style: textStyle(
+                        context: context,
+                        color: Theme.of(context).primaryColor,
+                        isBold: true,
+                        haveUnderline: true,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          controller.resendOTP(context);
+                        },
+                    ),
+                  ],
+                )),
           SizedBox(
             height: AppMethods.DEFAULT_PADDING,
           ),

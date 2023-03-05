@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:skill_rate/main.dart';
-import 'package:skill_rate/screens/main/main.dart';
+
+import '../main/main.dart';
 
 class SplashController extends GetxController {
   bool show = false;

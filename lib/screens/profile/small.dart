@@ -88,6 +88,15 @@ class Small extends StatelessWidget {
                   borderColor: Theme.of(context).dividerColor,
                   hint: "Email",
                   textColor: Theme.of(context).splashColor,
+                  readOnly: controller.isReadOnlyEmail,
+                ),
+                TextFieldContainer(
+                  textEditingController: controller.phoneController,
+                  bgColor: Theme.of(context).scaffoldBackgroundColor,
+                  borderColor: Theme.of(context).dividerColor,
+                  hint: "Mobile",
+                  textColor: Theme.of(context).splashColor,
+                  readOnly: controller.isReadOnlyMobile,
                 ),
                 SizedBox(
                   height: AppMethods.DEFAULT_PADDING,
@@ -96,8 +105,10 @@ class Small extends StatelessWidget {
                   padding: EdgeInsets.symmetric(
                       horizontal: AppMethods.DEFAULT_PADDING),
                   child: AppButton(
-                    text: "Submit",
-                    onTap: () {},
+                    text: "Update Profile",
+                    onTap: () {
+                      controller.updateProfile(context);
+                    },
                   ),
                 ),
               ],
@@ -243,7 +254,7 @@ class Small extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 horizontal: AppMethods.DEFAULT_PADDING * 3 / 2),
             child: AppButton(
-              text: "Add Data",
+              text: "Add Skill",
               onTap: () {
                 controller.addSkills(context);
               },

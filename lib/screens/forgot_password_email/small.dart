@@ -40,8 +40,8 @@ class Small extends StatelessWidget {
           Column(
             children: [
               TextFieldContainer(
-                textEditingController: controller.emailController,
-                hint: "Enter your email",
+                textEditingController: controller.emailPhoneController,
+                hint: "Enter your email/phone (without code)",
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(
@@ -52,7 +52,7 @@ class Small extends StatelessWidget {
                   controller.goToOTPScreen(context);
                 },
                 text: "Send Code",
-                isLoading: false,
+                isLoading: controller.isLoading,
               ),
               SizedBox(
                 height: AppMethods.DEFAULT_PADDING,

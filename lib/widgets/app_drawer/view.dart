@@ -43,10 +43,11 @@ class AppDrawerView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Options",
+                    "Menu",
                     style: textStyleMenu(
                       context: context,
                       fontSize: FontSize.H3,
+                      isBold: true,
                     ),
                   ),
                   Opacity(
@@ -69,6 +70,7 @@ class AppDrawerView extends StatelessWidget {
                     if (controller.userModel.id != null)
                       menuItem(
                         context,
+                        Icons.person,
                         "Profile",
                         () async {
                           Get.to(
@@ -77,9 +79,10 @@ class AppDrawerView extends StatelessWidget {
                           );
                         },
                       ),
-                    menuItem(context, "Setting", () => {}),
+                    /* menuItem(context, Icons.settings, "Settings", () => {}),*/
                     menuItem(
                         context,
+                        Icons.phone,
                         "Contact us",
                         () => {
                               Get.to(() => PredefinedPageScreen(), arguments: {
@@ -89,15 +92,7 @@ class AppDrawerView extends StatelessWidget {
                             }),
                     menuItem(
                         context,
-                        "Help and Feedback",
-                        () => {
-                              Get.to(() => PredefinedPageScreen(), arguments: {
-                                "end": "about-us",
-                                "title": "Help and Feedback"
-                              })
-                            }),
-                    menuItem(
-                        context,
+                        Icons.privacy_tip,
                         "Privacy Policy",
                         () => {
                               Get.to(() => PredefinedPageScreen(), arguments: {
@@ -105,7 +100,17 @@ class AppDrawerView extends StatelessWidget {
                                 "title": "Privacy Policy"
                               })
                             }),
-                    menuItem(context, "Security", () => {}),
+                    menuItem(context, Icons.lock, "Change Password", () => {}),
+                    menuItem(
+                        context,
+                        Icons.help,
+                        "Help and Feedback",
+                        () => {
+                              Get.to(() => PredefinedPageScreen(), arguments: {
+                                "end": "about-us",
+                                "title": "Help and Feedback"
+                              })
+                            }),
                   ],
                 ),
               ),
@@ -129,7 +134,8 @@ class AppDrawerView extends StatelessWidget {
     );
   }
 
-  Widget menuItem(BuildContext context, String title, Function() onPressed) {
+  Widget menuItem(BuildContext context, IconData iconData, String title,
+      Function() onPressed) {
     return Bounce(
       onPressed: onPressed,
       child: Column(
@@ -138,11 +144,23 @@ class AppDrawerView extends StatelessWidget {
           SizedBox(
             height: AppMethods.DEFAULT_PADDING,
           ),
-          Text(
-            title,
-            style: textStyleMenu(
-              context: context,
-            ),
+          Row(
+            children: [
+              Icon(
+                iconData,
+                color: Theme.of(context).shadowColor,
+                size: 25,
+              ),
+              SizedBox(
+                width: AppMethods.DEFAULT_PADDING / 2,
+              ),
+              Text(
+                title,
+                style: textStyleMenu(
+                  context: context,
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: AppMethods.DEFAULT_PADDING,

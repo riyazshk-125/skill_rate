@@ -8,6 +8,7 @@ import 'package:skill_rate/widgets/flutter_bounce.dart';
 
 import '../../helper/styles.dart';
 import '../../widgets/back_button.dart';
+import '../../widgets/button.dart';
 import '../../widgets/menu_button.dart';
 import '../../widgets/rating_widget/rating_bar.dart';
 import 'controller.dart';
@@ -89,7 +90,9 @@ class Small extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      controller.userModel.email ?? "",
+                      controller.userModel.email ??
+                          controller.userModel.username ??
+                          "",
                       style: textStyle(
                           context: context,
                           fontSize: FontSize.H3,
@@ -196,6 +199,19 @@ class Small extends StatelessWidget {
                     ],
                   ),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: AppMethods.DEFAULT_PADDING * 3 / 2),
+                child: AppButton(
+                  text: "Add Skill",
+                  onTap: () {
+                    controller.addSkills(context);
+                  },
+                ),
+              ),
+              SizedBox(
+                height: AppMethods.DEFAULT_PADDING,
               ),
               /*Padding(
                 padding: EdgeInsets.symmetric(

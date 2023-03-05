@@ -164,33 +164,54 @@ class Small extends StatelessWidget {
                             SizedBox(
                               width: AppMethods.DEFAULT_PADDING,
                             ),
-                            IgnorePointer(
-                              ignoring: true,
-                              child: RatingBar(
-                                itemSize: 25,
-                                ratingWidget: RatingWidget(
-                                  full: const Icon(
-                                    Icons.star,
-                                    size: 10,
-                                    color: Color(0xFFDFB300),
-                                  ),
-                                  half: const Icon(
-                                    Icons.star,
-                                    size: 10,
-                                    color: Color(0xFFDFB300),
-                                  ),
-                                  empty: const Icon(
-                                    Icons.star,
-                                    size: 10,
-                                    color: Color(0xFF494949),
+                            Column(
+                              children: [
+                                Text(
+                                  double.parse(controller
+                                              .skillDetailModel.avgRating ??
+                                          "0.0")
+                                      .toStringAsFixed(1),
+                                  style: textStyle(
+                                    context: context,
+                                    fontSize: FontSize.H4,
                                   ),
                                 ),
-                                onRatingUpdate: (double value) {},
-                                allowHalfRating: false,
-                                initialRating: double.parse(
-                                    controller.skillDetailModel.avgRating ??
-                                        "0.0"),
-                              ),
+                                IgnorePointer(
+                                  ignoring: true,
+                                  child: RatingBar(
+                                    itemSize: 15,
+                                    ratingWidget: RatingWidget(
+                                      full: const Icon(
+                                        Icons.star,
+                                        size: 10,
+                                        color: Color(0xFFDFB300),
+                                      ),
+                                      half: const Icon(
+                                        Icons.star,
+                                        size: 10,
+                                        color: Color(0xFFDFB300),
+                                      ),
+                                      empty: const Icon(
+                                        Icons.star,
+                                        size: 10,
+                                        color: Color(0xFF494949),
+                                      ),
+                                    ),
+                                    onRatingUpdate: (double value) {},
+                                    allowHalfRating: false,
+                                    initialRating: double.parse(
+                                        controller.skillDetailModel.avgRating ??
+                                            "0.0"),
+                                  ),
+                                ),
+                                Text(
+                                  "(${controller.skillDetailModel.userSkillRating?.data?.length ?? 0})",
+                                  style: textStyle(
+                                    context: context,
+                                    fontSize: FontSize.H6,
+                                  ),
+                                ),
+                              ],
                             )
                           ],
                         ),
@@ -206,165 +227,199 @@ class Small extends StatelessWidget {
                           horizontal: AppMethods.DEFAULT_PADDING),
                       child: ListView(
                         children: [
-                          ...List.generate(
-                            controller.skillDetailModel.userSkillRating?.data
-                                    ?.length ??
-                                0,
-                            (index) => Container(
-                              margin: EdgeInsets.only(
-                                  bottom: AppMethods.DEFAULT_PADDING / 2),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    /*margin: EdgeInsets.only(
+                          ...[
+                            ...List.generate(
+                              controller.skillDetailModel.userSkillRating?.data
+                                      ?.length ??
+                                  0,
+                              (index) => Container(
+                                margin: EdgeInsets.only(
+                                    bottom: AppMethods.DEFAULT_PADDING / 2),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      /*margin: EdgeInsets.only(
                                       bottom: AppMethods.DEFAULT_PADDING / 2),*/
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).canvasColor,
-                                      border: Border.all(
-                                        color: Theme.of(context).dividerColor,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).canvasColor,
+                                        border: Border.all(
+                                          color: Theme.of(context).dividerColor,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          8,
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(
-                                        8,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                        horizontal: 20,
                                       ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                      horizontal: 20,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                controller.getReviewedUserName(
-                                                    controller
-                                                        .skillDetailModel
-                                                        .userSkillRating
-                                                        ?.data?[index]
-                                                        .reviewedByInfo),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  controller
+                                                      .getReviewedUserName(
+                                                          controller
+                                                              .skillDetailModel
+                                                              .userSkillRating
+                                                              ?.data?[index]
+                                                              .reviewedByInfo),
+                                                  style: textStyle(
+                                                    context: context,
+                                                    fontSize: FontSize.H3,
+                                                  ),
+                                                ),
+                                              ),
+                                              IgnorePointer(
+                                                ignoring: true,
+                                                child: RatingBar(
+                                                  itemSize: 15,
+                                                  ratingWidget: RatingWidget(
+                                                    full: const Icon(
+                                                      Icons.star,
+                                                      size: 10,
+                                                      color: Color(0xFFDFB300),
+                                                    ),
+                                                    half: const Icon(
+                                                      Icons.star,
+                                                      size: 10,
+                                                      color: Color(0xFFDFB300),
+                                                    ),
+                                                    empty: const Icon(
+                                                      Icons.star,
+                                                      size: 10,
+                                                      color: Color(0xFF494949),
+                                                    ),
+                                                  ),
+                                                  onRatingUpdate:
+                                                      (double value) {},
+                                                  allowHalfRating: false,
+                                                  initialRating: double.parse(
+                                                      controller
+                                                              .skillDetailModel
+                                                              .userSkillRating
+                                                              ?.data?[index]
+                                                              .rating ??
+                                                          "0.0"),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          if (controller
+                                                  .skillDetailModel
+                                                  .userSkillRating
+                                                  ?.data?[index]
+                                                  .review !=
+                                              null) ...[
+                                            SizedBox(
+                                              height:
+                                                  AppMethods.DEFAULT_PADDING,
+                                            ),
+                                            if (controller
+                                                    .skillDetailModel
+                                                    .userSkillRating
+                                                    ?.data?[index]
+                                                    .review
+                                                    ?.isNotEmpty ??
+                                                false)
+                                              Text(
+                                                '"${controller.skillDetailModel.userSkillRating?.data?[index].review}"',
                                                 style: textStyle(
                                                   context: context,
-                                                  fontSize: FontSize.H3,
+                                                  fontSize: FontSize.H5,
+                                                  color: Theme.of(context)
+                                                      .primaryColorDark,
+                                                  isItalic: true,
                                                 ),
                                               ),
-                                            ),
-                                            IgnorePointer(
-                                              ignoring: true,
-                                              child: RatingBar(
-                                                itemSize: 15,
-                                                ratingWidget: RatingWidget(
-                                                  full: const Icon(
-                                                    Icons.star,
-                                                    size: 10,
-                                                    color: Color(0xFFDFB300),
+                                            if (controller.myGivenRating.id ==
+                                                controller
+                                                    .skillDetailModel
+                                                    .userSkillRating
+                                                    ?.data?[index]
+                                                    .id)
+                                              Opacity(
+                                                opacity: 0,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .dividerColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      8,
+                                                    ),
                                                   ),
-                                                  half: const Icon(
-                                                    Icons.star,
-                                                    size: 10,
-                                                    color: Color(0xFFDFB300),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 6,
+                                                    horizontal: 10,
                                                   ),
-                                                  empty: const Icon(
-                                                    Icons.star,
-                                                    size: 10,
-                                                    color: Color(0xFF494949),
+                                                  child: Icon(
+                                                    Icons.edit_outlined,
+                                                    color: Theme.of(context)
+                                                        .backgroundColor,
+                                                    size: AppMethods
+                                                        .DEFAULT_PADDING,
                                                   ),
                                                 ),
-                                                onRatingUpdate:
-                                                    (double value) {},
-                                                allowHalfRating: false,
-                                                initialRating: double.parse(
-                                                    controller
-                                                            .skillDetailModel
-                                                            .userSkillRating
-                                                            ?.data?[index]
-                                                            .rating ??
-                                                        "0.0"),
-                                              ),
-                                            )
+                                              )
                                           ],
-                                        ),
-                                        if (controller
-                                                .skillDetailModel
-                                                .userSkillRating
-                                                ?.data?[index]
-                                                .review !=
-                                            null) ...[
-                                          SizedBox(
-                                            height: AppMethods.DEFAULT_PADDING,
-                                          ),
-                                          Text(
-                                            '"${controller.skillDetailModel.userSkillRating?.data?[index].review}"',
-                                            style: textStyle(
-                                              context: context,
-                                              fontSize: FontSize.H5,
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                              isItalic: true,
-                                            ),
-                                          ),
-                                          if (controller.myGivenRating.id ==
-                                              controller
-                                                  .skillDetailModel
-                                                  .userSkillRating
-                                                  ?.data?[index]
-                                                  .id)
-                                            Opacity(
-                                              opacity: 0,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .dividerColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    8,
-                                                  ),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 6,
-                                                  horizontal: 10,
-                                                ),
-                                                child: Icon(
-                                                  Icons.edit_outlined,
-                                                  color: Theme.of(context)
-                                                      .backgroundColor,
-                                                  size: AppMethods
-                                                      .DEFAULT_PADDING,
-                                                ),
-                                              ),
-                                            )
                                         ],
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                  if (controller.myGivenRating.id ==
-                                      controller.skillDetailModel
-                                          .userSkillRating?.data?[index].id)
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: controller
-                                                  .skillDetailModel
-                                                  .userSkillRating
-                                                  ?.data?[index]
-                                                  .isApproved !=
-                                              "0"
-                                          ? Bounce(
-                                              onPressed: () {
-                                                controller.openAddRatingDialog(
-                                                    context,
-                                                    controller
-                                                        .skillDetailModel
-                                                        .userSkillRating
-                                                        ?.data?[index]);
-                                              },
-                                              child: Container(
+                                    if (controller.myGivenRating.id ==
+                                        controller.skillDetailModel
+                                            .userSkillRating?.data?[index].id)
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: controller
+                                                    .skillDetailModel
+                                                    .userSkillRating
+                                                    ?.data?[index]
+                                                    .isApproved !=
+                                                "0"
+                                            ? Bounce(
+                                                onPressed: () {
+                                                  controller
+                                                      .openAddRatingDialog(
+                                                          context,
+                                                          controller
+                                                              .skillDetailModel
+                                                              .userSkillRating
+                                                              ?.data?[index],
+                                                          0);
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .dividerColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      8,
+                                                    ),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 6,
+                                                    horizontal: 10,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.edit_outlined,
+                                                    color: Theme.of(context)
+                                                        .backgroundColor,
+                                                    size: AppMethods
+                                                        .DEFAULT_PADDING,
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
                                                 decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .dividerColor,
+                                                  color: Color(0xFFFFF8C0),
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                     8,
@@ -375,41 +430,109 @@ class Small extends StatelessWidget {
                                                   vertical: 6,
                                                   horizontal: 10,
                                                 ),
-                                                child: Icon(
-                                                  Icons.edit_outlined,
-                                                  color: Theme.of(context)
-                                                      .backgroundColor,
-                                                  size: AppMethods
-                                                      .DEFAULT_PADDING,
+                                                child: Text(
+                                                  "Approval Pending",
+                                                  style: textStyle(
+                                                      context: context,
+                                                      fontSize: FontSize.P2,
+                                                      color: Color(0xFFCCA300)),
                                                 ),
                                               ),
-                                            )
-                                          : Container(
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFFFF8C0),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  8,
-                                                ),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 6,
-                                                horizontal: 10,
-                                              ),
-                                              child: Text(
-                                                "Approval Pending",
-                                                style: textStyle(
-                                                    context: context,
-                                                    fontSize: FontSize.P2,
-                                                    color: Color(0xFFCCA300)),
-                                              ),
-                                            ),
-                                    )
-                                ],
+                                      )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                          if (controller.myGivenRating.id == null) ...[
+                            Divider(),
+                            Text(
+                              "Rate and Review",
+                              style: textStyle(
+                                context: context,
+                                isBold: true,
                               ),
                             ),
-                          )
+                            Text(
+                              "Share your experience to help other",
+                              style: textStyle(
+                                context: context,
+                                fontSize: FontSize.H6,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            RatingBar(
+                              itemSize: 60,
+                              ratingWidget: RatingWidget(
+                                full: const Icon(
+                                  Icons.star,
+                                  size: 10,
+                                  color: Color(0xFFDFB300),
+                                ),
+                                half: const Icon(
+                                  Icons.star,
+                                  size: 10,
+                                  color: Color(0xFFDFB300),
+                                ),
+                                empty: const Icon(
+                                  Icons.star,
+                                  size: 10,
+                                  color: Color(0xFF494949),
+                                ),
+                              ),
+                              onRatingUpdate: (double value) {
+                                controller.openAddRatingDialog(
+                                    context, null, value);
+                              },
+                              allowHalfRating: false,
+                              initialRating: 0,
+                              wrapAlignment: WrapAlignment.center,
+                            ),
+                            Divider(),
+                          ],
+                          /*Center(
+                              child: Bounce(
+                                onPressed: () {
+                                  controller.openAddRatingDialog(context, null);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Theme.of(context).backgroundColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(1000),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: AppMethods.DEFAULT_PADDING,
+                                      vertical: AppMethods.DEFAULT_PADDING / 2),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.edit_outlined,
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        size: width(context) / 18,
+                                      ),
+                                      SizedBox(
+                                        width: AppMethods.DEFAULT_PADDING / 4,
+                                      ),
+                                      Text(
+                                        "Write a review",
+                                        style: textStyle(
+                                          context: context,
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          fontSize: FontSize.H6,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),*/
                         ],
                       ),
                     ),
@@ -664,28 +787,6 @@ class Small extends StatelessWidget {
               ],
             ],
           ),
-          if (controller.myGivenRating.id == null)
-            Positioned(
-              bottom: AppMethods.DEFAULT_PADDING,
-              right: AppMethods.DEFAULT_PADDING,
-              child: Bounce(
-                onPressed: () {
-                  controller.openAddRatingDialog(context, null);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).shadowColor,
-                  ),
-                  padding: EdgeInsets.all(AppMethods.DEFAULT_PADDING / 2),
-                  child: Icon(
-                    Icons.add_outlined,
-                    color: Theme.of(context).cardColor,
-                    size: AppMethods.DEFAULT_PADDING * 1.5,
-                  ),
-                ),
-              ),
-            )
         ],
       ),
     ).scaffold(scaffoldKey);

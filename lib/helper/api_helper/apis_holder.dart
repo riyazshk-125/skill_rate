@@ -17,26 +17,24 @@ class ApiHolder {
     _apiService = ApiService();
   }
 
-  Future<LoginResponseModel> login(
-      {String? username, String? email, String? password}) async {
+  Future<LoginResponseModel> login({String? email, String? password}) async {
     try {
       Map<String, dynamic> body = {
-        "username": username ?? "",
-        "email": email ?? "",
+        "email_mobile": email ?? "",
         "password": password ?? ""
       };
       //Call API
       var response =
           await _apiService.callApi("auth/userLogin", ApiType.POST, body: body);
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return LoginResponseModel();
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
-        return LoginResponseModel();
-      } else if (response.statusCode == 401) {
         Fluttertoast.showToast(msg: response.body["message"]);
+        // Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        return LoginResponseModel();
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return LoginResponseModel();
       } else {
         return LoginResponseModel.fromJson(response.body["data"]);
@@ -48,29 +46,29 @@ class ApiHolder {
     }
   }
 
-  Future<LoginResponseModel> checkPhone({String? phone}) async {
+  Future<bool?> checkIfExist(
+      {String? phoneEmail, bool isForLogin = false, String? userName}) async {
     try {
-      Map<String, dynamic> body = {"mobile": phone ?? ""};
+      Map<String, dynamic> body = {
+        "email_mobile": phoneEmail ?? "",
+        if (userName != null) "username": userName
+      };
       //Call API
       var response = await _apiService
-          .callApi("auth/userMobileExists", ApiType.POST, body: body);
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
-        return LoginResponseModel();
-      } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
-        return LoginResponseModel();
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
-        return LoginResponseModel();
+          .callApi("auth/userAccountExists", ApiType.POST, body: body);
+      if (isForLogin) {
+        if (response.statusCode == 200) {
+          Fluttertoast.showToast(msg: response.body["message"]);
+        }
       } else {
-        return LoginResponseModel.fromJson(response.body["data"]);
+        if (response.statusCode == 400) {
+          Fluttertoast.showToast(msg: response.body["message"]);
+        }
       }
+      return response.statusCode != 200;
     } catch (e) {
       Get.log("$e");
       Fluttertoast.showToast(msg: "Something wrong");
-      return LoginResponseModel();
     }
   }
 
@@ -98,15 +96,14 @@ class ApiHolder {
       //Call API
       var response = await _apiService
           .callApi("auth/userRegistration", ApiType.POST, body: body);
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return LoginResponseModel();
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return LoginResponseModel();
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return LoginResponseModel();
       } else {
         return LoginResponseModel.fromJson(response.body["data"]);
@@ -118,28 +115,90 @@ class ApiHolder {
     }
   }
 
+  Future<String> sendEmailOTP({
+    String? firstName,
+    String? lastName,
+    String? email,
+  }) async {
+    try {
+      Map<String, dynamic> body = {
+        "first_name": firstName ?? "",
+        "last_name": lastName ?? "",
+        "email": email
+      };
+      //Call API
+      var response = await _apiService.callApi(
+          "auth/sendEmailAccountVerificationEmail", ApiType.POST,
+          body: body);
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return "";
+      } else if (response.statusCode == 400) {
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        return "";
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
+        return "";
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return "${response.body["data"]["otp"]}";
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return "";
+    }
+  }
+
+  Future<String> sendForgetEmailOTP({
+    String? email,
+  }) async {
+    try {
+      Map<String, dynamic> body = {"email": email};
+      //Call API
+      var response = await _apiService
+          .callApi("auth/forgetPasswordSendCode", ApiType.POST, body: body);
+      Get.log(response.statusCode.toString());
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return "";
+      } else if (response.statusCode == 400) {
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        return "";
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
+        return "";
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return "${response.body["data"]["otp"]}";
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return "";
+    }
+  }
+
   Future<bool> changePassword({
     String? email,
     String? password,
   }) async {
     try {
       Map<String, dynamic> body = {
-        "email": email ?? "",
+        "email_mobile": email ?? "",
         "password": password ?? "",
-        "setpassword": "1",
       };
       //Call API
       var response = await _apiService
           .callApi("auth/forgetPassword", ApiType.POST, body: body);
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return false;
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return false;
       } else {
         Fluttertoast.showToast(msg: response.body["message"]);
@@ -157,16 +216,14 @@ class ApiHolder {
     try {
       var response =
           await _apiService.callApi("users/userProfile", ApiType.GET);
-      print(jsonEncode(response.body));
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return UserModel();
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return UserModel();
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return UserModel();
       } else {
         return UserModel.fromJson(response.body["data"]);
@@ -183,16 +240,14 @@ class ApiHolder {
     try {
       var response = await _apiService.callApi(
           "users/getOtherUsersList?page=$page", ApiType.GET);
-      Get.log(jsonEncode(response.body));
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return [];
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return [];
       } else {
         totalCount(response.body["data"]["total"]);
@@ -215,15 +270,14 @@ class ApiHolder {
     try {
       var response =
           await _apiService.callApi("auth/getAllSkills", ApiType.GET);
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return [];
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return [];
       } else {
         List<dynamic> tempDynamicList =
@@ -245,15 +299,14 @@ class ApiHolder {
     try {
       var response =
           await _apiService.callApi("users/viewMySkills", ApiType.GET);
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return [];
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return [];
       } else {
         List<dynamic> tempDynamicList =
@@ -280,15 +333,14 @@ class ApiHolder {
         ApiType.POST,
         body: body,
       );
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return false;
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return false;
       } else {
         Fluttertoast.showToast(msg: response.body["message"]);
@@ -319,15 +371,14 @@ class ApiHolder {
         ApiType.POST,
         body: body,
       );
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return false;
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return false;
       } else {
         Fluttertoast.showToast(msg: response.body["message"]);
@@ -345,20 +396,18 @@ class ApiHolder {
     try {
       var response = await _apiService.callApi(
           "users/getOtherUserProfile/$userId", ApiType.GET);
-      print(jsonEncode(response.body));
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return UserModel();
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return UserModel();
-      } else if (response.statusCode == 401 || response.statusCode == 403) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return UserModel();
       } else {
         try {
-          return UserModel.fromJson(response.body["data"][0]);
+          return UserModel.fromJson(response.body["data"]);
         } catch (e) {
           return UserModel();
         }
@@ -376,23 +425,16 @@ class ApiHolder {
       var response = await _apiService.callApi(
           "users/loadOtherUserSkillData/$skillId", ApiType.GET);
 
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
-        return SkillDetailModel();
-      } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
-        return SkillDetailModel();
-      } else if (response.statusCode == 401 || response.statusCode == 403) {
+      if (response.statusCode == 500 || response.statusCode == 401) {
         Fluttertoast.showToast(msg: response.body["message"]);
         return SkillDetailModel();
-      } else {
-        /*try {
-        return SkillDetailModel.fromJson(response.body["data"][0]);
-      } catch (e) {
-        print(e);
+      } else if (response.statusCode == 400) {
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return SkillDetailModel();
-      }*/
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
+        return SkillDetailModel();
+      } else {
         return SkillDetailModel.fromJson(response.body["data"]);
       }
     } catch (e) {
@@ -402,72 +444,6 @@ class ApiHolder {
     }
   }
 
-/*Future<VerifyPhoneNumberModel> callVerifyPhoneNumberApi(
-      String phoneNumber, String? appSignature) async {
-    Map<String, dynamic> body = {
-      "phone_number": phoneNumber,
-      "app_signature": appSignature
-    };
-    var response = await _apiService
-        .callApi("verify-phone-number", ApiType.POST, null, body: body);
-
-    Get.log("callVerifyPhoneNumberApi : ${jsonEncode(response.body)}");
-    if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: response.body["errors"].toString());
-
-      return VerifyPhoneNumberModel();
-    } else {
-      return VerifyPhoneNumberModel.fromJson(
-          jsonDecode(jsonEncode(response.body)));
-    }
-  }
-
-
-
-  Future<bool> callProfileRegistrationApi(Map<String, dynamic> body) async {
-    var userToken = await prefs.getUserToken();
-
-    var response = await _apiService
-        .callApi("profile-registration", ApiType.POST, userToken, body: body);
-
-    Get.log(
-        "callProfileRegistrationApi : ${response.statusCode}: ${jsonEncode(response.body)}");
-    if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: response.body["errors"].toString());
-
-      return false;
-    } else {
-      if (!response.body["status"]) {
-        Fluttertoast.showToast(msg: response.body["msg"]);
-      }
-      return response.body["status"];
-    }
-  }
-
-  Future<List<InterestModel>> callGetInterestsApi() async {
-    var userToken = await prefs.getUserToken();
-
-    var response =
-        await _apiService.callApi("get-interest", ApiType.GET, userToken);
-
-    Get.log(
-        "callGetInterestsApi : ${response.statusCode}: ${jsonEncode(response.body)}");
-    if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: response.body["errors"].toString());
-
-      return [];
-    } else {
-      List<dynamic> tempDynamicList = List<dynamic>.from(response.body);
-      List<InterestModel> list = [];
-      for (var item in tempDynamicList) {
-        list.add(InterestModel.fromJson(item));
-      }
-      return list;
-    }
-  }
-
-  */
-
   Future<String> predefinedPage({
     String? endPoint,
   }) async {
@@ -476,16 +452,15 @@ class ApiHolder {
       //Call API
       var response = await _apiService
           .callApi("users/viewPreDefinedPages", ApiType.POST, body: body);
-      Get.log(jsonEncode(response.body));
-      if (response.statusCode == 500) {
-        Fluttertoast.showToast(msg: "Server Error");
+
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 400) {
-        var keys = response.body["data"].keys;
-        Fluttertoast.showToast(msg: response.body["data"]["${keys.first}"][0]);
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
         return "";
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: response.body["message"]);
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
         return "";
       } else {
         return response.body["data"]["code"];
@@ -494,6 +469,38 @@ class ApiHolder {
       Get.log("$e");
       Fluttertoast.showToast(msg: "Something wrong");
       return "";
+    }
+  }
+
+  Future<bool> saveOtherUserSkills(String skills, int userId) async {
+    try {
+      var body = {
+        "skills": skills,
+        "user_id": userId,
+      };
+      //Call API
+      var response = await _apiService.callApi(
+        true ? "users/addOtherUserSkills" : "users/editMySkills",
+        ApiType.POST,
+        body: body,
+      );
+      if (response.statusCode == 500 || response.statusCode == 401) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return false;
+      } else if (response.statusCode == 400) {
+        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        return false;
+      } else if (response.statusCode == 404) {
+        Fluttertoast.showToast(msg: "Invalid access");
+        return false;
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return true;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return false;
     }
   }
 }

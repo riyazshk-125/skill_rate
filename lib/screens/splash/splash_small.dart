@@ -25,20 +25,24 @@ class SplashSmall extends StatelessWidget {
         duration: const Duration(milliseconds: 500),
         opacity: controller.show ? 1 : 0,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              "asset/image/app_logo.png",
-              width: width(context) / 3.125,
-              fit: BoxFit.contain,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(1000),
+              child: Image.asset(
+                "asset/image/app_icon.png",
+                width: width(context) / 3.125,
+                fit: BoxFit.contain,
+              ),
             ),
             Text(
               "SKILLRATE",
               style: textStyleLogo(context: context, fontSize: FontSize.LOGO),
             ),
             SizedBox(
-              height: AppMethods.DEFAULT_PADDING * 2,
+              height: AppMethods.DEFAULT_PADDING,
             ),
             AppButton(
               onTap: () {
@@ -60,7 +64,7 @@ class SplashSmall extends StatelessWidget {
             SizedBox(
               height: AppMethods.DEFAULT_PADDING,
             ),
-            Text(
+            /*Text(
               "Continue as a guest",
               style: textStyle(
                 context: context,
@@ -71,7 +75,7 @@ class SplashSmall extends StatelessWidget {
             ),
             SizedBox(
               height: AppMethods.DEFAULT_PADDING,
-            ),
+            ),*/
           ],
         ),
       ),

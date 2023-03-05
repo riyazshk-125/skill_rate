@@ -4,18 +4,18 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/main.dart';
-import 'package:skill_rate/screens/register_password/main.dart';
 
 import '../../helper/models/user_model.dart';
+import '../password_change/main.dart';
 
-class OTPController extends GetxController {
+class OTPForgotController extends GetxController {
   String otpText = "";
   String verificationId = "";
   int? resendToken;
   UserModel userModel = UserModel();
   bool isLoading = false;
-  bool isResendLoading = false;
   String? receiveOTP;
+  bool isResendLoading = false;
   int timerText = 30;
 
   @override
@@ -47,7 +47,7 @@ class OTPController extends GetxController {
       isLoading = false;
       update();
       if (userCreds.user != null) {
-        Get.off(() => RegisterPasswordScreen(userModel: userModel));
+        Get.off(() => PasswordChangeScreen(), arguments: userModel.mobile);
       }
     } else {
       if (otpText != receiveOTP) {
@@ -56,7 +56,7 @@ class OTPController extends GetxController {
         Fluttertoast.showToast(msg: "Invalid OTP");
         return;
       }
-      Get.off(() => RegisterPasswordScreen(userModel: userModel));
+      Get.off(() => PasswordChangeScreen(), arguments: userModel.email);
     }
   }
 

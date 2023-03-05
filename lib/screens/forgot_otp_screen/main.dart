@@ -6,12 +6,12 @@ import '../../helper/responsive_widget.dart';
 import 'controller.dart';
 import 'small.dart';
 
-class OTPScreen extends StatelessWidget {
+class OTPForgotScreen extends StatelessWidget {
   String verificationId;
   int? resendToken;
   UserModel userModel;
   String? receiveOTP;
-  OTPScreen({
+  OTPForgotScreen({
     Key? key,
     required this.resendToken,
     required this.verificationId,
@@ -21,8 +21,8 @@ class OTPScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<OTPController>(
-      init: OTPController(),
+    return GetBuilder<OTPForgotController>(
+      init: OTPForgotController(),
       didChangeDependencies: (state) {
         state.controller?.verificationId = verificationId;
         state.controller?.resendToken = resendToken;

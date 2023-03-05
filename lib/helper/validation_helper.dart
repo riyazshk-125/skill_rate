@@ -74,4 +74,15 @@ class Validator {
       }
     }
   }
+
+  static String? validatePassword(String value) {
+    if (value.isEmpty) {
+      return "Enter Password";
+    } else if (!RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*[\W_]).{8,}$")
+        .hasMatch(value)) {
+      return "The password should contain 1 Uppercase letter, 1 Lowercase letter, 1 symbol & 1 numerics. Minimum length should be 8 Characters";
+    } else {
+      return null;
+    }
+  }
 }

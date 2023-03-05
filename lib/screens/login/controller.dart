@@ -6,15 +6,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skill_rate/helper/validation_helper.dart';
 import 'package:skill_rate/main.dart';
 import 'package:skill_rate/screens/main/main.dart';
-import 'package:skill_rate/screens/otp_screen/main.dart';
 
 import '../../helper/models/login_response.dart';
 
 class LoginController extends GetxController {
-  bool showPassword = false;
-  TextEditingController emailController = TextEditingController();
+  bool showPassword = true;
+  TextEditingController emailPhoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
       'https://www.googleapis.com/auth/userinfo.email',
@@ -69,9 +67,22 @@ class LoginController extends GetxController {
   }
 
   void login(BuildContext context) async {
-    String? emailError = Validator.validateEmail(emailController.text.trim());
-    if (emailError != null) {
-      Fluttertoast.showToast(msg: emailError);
+    if (emailPhoneController.text.trim().isEmpty) {
+      Fluttertoast.showToast(msg: "Enter Email or phone");
+      return;
+    }
+    if (emailPhoneController.text.trim().startsWith("0") ||
+        emailPhoneController.text.trim().startsWith("+91")) {
+      Fluttertoast.showToast(msg: "Enter phone number without code");
+      return;
+    }
+    String? phoneError =
+        Validator.validatePhone(emailPhoneController.text.trim(), false);
+    String? emailError =
+        Validator.validateEmail(emailPhoneController.text.trim());
+
+    if (emailError != null && phoneError != null) {
+      Fluttertoast.showToast(msg: "Enter field should be email or phone");
       return;
     }
 
@@ -83,20 +94,18 @@ class LoginController extends GetxController {
     isLoading = true;
     update();
     LoginResponseModel loginResponse = await apiHolder.login(
-        email: emailController.text.trim(),
+        email: emailPhoneController.text.trim(),
         password: passwordController.text.trim());
     isLoading = false;
     update();
-    // print(jsonEncode(loginResponse));
     if (loginResponse.token != null) {
       await prefs.setUserToken(loginResponse.token ?? "");
-      print(await prefs.getUserToken());
       Get.offAll(() => MainScreen());
     }
   }
 
   Future<void> sendOTP(BuildContext context) async {
-    String? phoneError =
+    /*String? phoneError =
         Validator.validatePhone(phoneController.text.trim(), false);
     if (phoneError != null) {
       Fluttertoast.showToast(msg: phoneError);
@@ -106,9 +115,9 @@ class LoginController extends GetxController {
     isLoading = true;
     update();
     LoginResponseModel loginResponse =
-        await apiHolder.checkPhone(phone: phoneController.text.trim());
+        await apiHolder.checkPhone(phone: phoneController.text.trim());*/
 
-    firebaseHelper.verifyNumber(phoneController.text.trim(),
+    /*firebaseHelper.verifyNumber(phoneController.text.trim(),
         codeSent: (verificationId, resendToken) {
       isLoading = false;
       update();
@@ -118,6 +127,6 @@ class LoginController extends GetxController {
             verificationId: verificationId,
             phone: phoneController.text.trim(),
           ));
-    });
+    });*/
   }
 }

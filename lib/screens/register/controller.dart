@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skill_rate/helper/models/login_response.dart';
+import 'package:skill_rate/helper/models/user_model.dart';
 import 'package:skill_rate/screens/main/main.dart';
 
 import '../../helper/validation_helper.dart';
@@ -11,14 +12,10 @@ import '../../main.dart';
 import '../otp_screen/main.dart';
 
 class RegisterController extends GetxController {
-  bool showPassword = false;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailPhoneController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -28,7 +25,7 @@ class RegisterController extends GetxController {
   );
   bool isLoading = false;
   bool isGLoading = false;
-  bool loginWithPassword = true;
+
   @override
   void onInit() {
     super.onInit();
@@ -39,23 +36,88 @@ class RegisterController extends GetxController {
     super.dispose();
   }
 
-  void togglePassword() {
-    showPassword = !showPassword;
-    update();
-  }
 
   Future<void> register(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       return;
     }
-    if (passwordController.text.trim() !=
-        confirmPasswordController.text.trim()) {
-      Fluttertoast.showToast(msg: "Password and confirm password should same");
+    if (emailPhoneController.text.trim().isEmpty) {
+      Fluttertoast.showToast(msg: "Enter Email or phone");
       return;
     }
+    if (emailPhoneController.text.trim().startsWith("0") ||
+        emailPhoneController.text.trim().startsWith("+91")) {
+      Fluttertoast.showToast(msg: "Enter phone number without code");
+      return;
+    }
+    String? phoneError =
+        Validator.validatePhone(emailPhoneController.text.trim(), false);
+    String? emailError =
+        Validator.validateEmail(emailPhoneController.text.trim());
+
+    if (emailError != null && phoneError != null) {
+      Fluttertoast.showToast(msg: "Enter field should be email or phone");
+      return;
+    }
+
     isLoading = true;
     update();
-    LoginResponseModel loginResponse = await apiHolder.register(
+
+    UserModel userModel = UserModel(
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      username: usernameController.text.trim(),
+      email: emailPhoneController.text.trim(),
+      mobile: emailPhoneController.text.trim(),
+    );
+
+    //check if already registered
+    isLoading = true;
+    update();
+    bool? isExist = await apiHolder.checkIfExist(
+        phoneEmail: emailPhoneController.text.trim(),
+        userName: userModel.username);
+
+    if (isExist != null && !isExist) {
+      if (phoneError != null) {
+        userModel.mobile = null;
+        //Should be email
+
+        String receiveOTP = await apiHolder.sendEmailOTP(
+            firstName: userModel.firstName,
+            lastName: userModel.lastName,
+            email: userModel.email);
+        isLoading = false;
+        update();
+        if (receiveOTP.isNotEmpty) {
+          Get.to(() => OTPScreen(
+                userModel: userModel,
+                receiveOTP: receiveOTP,
+                verificationId: "",
+                resendToken: 0,
+              ));
+        }
+      } else {
+        //Should be phone
+        userModel.email = null;
+
+        firebaseHelper.verifyNumber(emailPhoneController.text.trim(),
+            codeSent: (verificationId, resendToken) {
+          isLoading = false;
+          update();
+          Get.to(() => OTPScreen(
+                resendToken: resendToken,
+                verificationId: verificationId,
+                userModel: userModel,
+              ));
+        });
+      }
+    } else {
+      isLoading = false;
+      update();
+    }
+
+    /*LoginResponseModel loginResponse = await apiHolder.register(
         password: passwordController.text.trim(),
         email: emailController.text.trim(),
         username: usernameController.text.trim(),
@@ -68,8 +130,7 @@ class RegisterController extends GetxController {
       await prefs.setUserToken(loginResponse.token ?? "");
       print(await prefs.getUserToken());
       Get.offAll(() => MainScreen());
-    }
-    print("All right");
+    }*/
   }
 
   void googleLogin(BuildContext context) async {
@@ -101,7 +162,7 @@ class RegisterController extends GetxController {
     if (loginResult.status == LoginStatus.success) {}
   }
 
-  Future<void> sendOTP(BuildContext context) async {
+/*Future<void> sendOTP(BuildContext context) async {
     String? phoneError =
         Validator.validatePhone(phoneController.text.trim(), false);
     if (phoneError != null) {
@@ -125,5 +186,5 @@ class RegisterController extends GetxController {
             phone: phoneController.text.trim(),
           ));
     });
-  }
+  }*/
 }

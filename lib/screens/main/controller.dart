@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/main.dart';
@@ -88,6 +90,11 @@ class MainController extends GetxController {
 
   void getMyProfile() async {
     UserModel myProfile = await apiHolder.userProfile();
+    Get.log(jsonEncode(myProfile));
     await prefs.setUserModel(myProfile);
+  }
+
+  void testApi() async {
+    apiHolder.userProfile();
   }
 }

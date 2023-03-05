@@ -35,7 +35,7 @@ class ApiService extends GetConnect {
               },
             );
             Get.log(
-                "URL : $_BASE_URL$endPoint , Response : ${jsonEncode(response.body)}");
+                "URL : $_BASE_URL$endPoint , Status Code : ${response.statusCode} , Response : ${jsonEncode(response.body)}");
             if (response.body != null) {
               return response;
             } else {
@@ -59,7 +59,7 @@ class ApiService extends GetConnect {
               },
             );
             Get.log(
-                "URL : $_BASE_URL$endPoint , Response : ${jsonEncode(response.body)}");
+                "URL : $_BASE_URL$endPoint , Status Code : ${response.statusCode} , Response : ${jsonEncode(response.body)}");
 
             if (response.body != null) {
               return response;

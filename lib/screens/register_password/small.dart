@@ -9,7 +9,7 @@ import '../../widgets/back_button.dart';
 import 'controller.dart';
 
 class Small extends StatelessWidget {
-  final RegisterPhoneController controller;
+  final RegisterPasswordController controller;
 
   const Small({Key? key, required this.controller}) : super(key: key);
 
@@ -41,7 +41,7 @@ class Small extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    "Hello! Register to get started",
+                    "Set your password",
                     style: textStyle(
                       context: context,
                       fontSize: FontSize.H1,
@@ -64,42 +64,29 @@ class Small extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextFieldContainer(
-                    textEditingController: controller.firstNameController,
-                    hint: "First Name",
-                    keyboardType: TextInputType.text,
-                    validator: (value) => Validator.validateName(value ?? ""),
-                  ),
-                  SizedBox(
-                    height: AppMethods.DEFAULT_PADDING / 2,
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.lastNameController,
-                    hint: "Last Name",
-                    keyboardType: TextInputType.text,
-                    validator: (value) =>
-                        Validator.validateName((value ?? " ").trim()),
-                  ),
-                  SizedBox(
-                    height: AppMethods.DEFAULT_PADDING / 2,
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.usernameController,
-                    hint: "Username",
-                    keyboardType: TextInputType.text,
+                    textEditingController: controller.passwordController,
+                    onToggle: () {
+                      controller.togglePassword();
+                    },
+                    hint: "Password",
+                    showText: controller.showPassword,
                     isLastField: true,
                     validator: (value) =>
-                        Validator.validateText((value ?? " ").trim()),
+                        Validator.validatePassword((value ?? " ").trim()),
                   ),
                   SizedBox(
-                    height: AppMethods.DEFAULT_PADDING,
+                    height: AppMethods.DEFAULT_PADDING / 2,
                   ),
                   TextFieldContainer(
-                    textEditingController: controller.phoneController,
-                    hint: "Phone",
-                    readOnly: true,
-                    keyboardType: TextInputType.text,
+                    textEditingController: controller.confirmPasswordController,
+                    onToggle: () {
+                      controller.toggleConfirmPassword();
+                    },
+                    hint: "Confirm Password",
+                    showText: controller.showConfirmPassword,
+                    isLastField: true,
                     validator: (value) =>
-                        Validator.validateText((value ?? " ").trim()),
+                        Validator.validatePassword((value ?? " ").trim()),
                   ),
                   SizedBox(
                     height: AppMethods.DEFAULT_PADDING,

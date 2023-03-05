@@ -8,11 +8,10 @@ import 'package:skill_rate/widgets/otp_widgets/style.dart';
 
 import '../../helper/styles.dart';
 import '../../widgets/back_button.dart';
-import '../login/main.dart';
 import 'controller.dart';
 
 class Small extends StatelessWidget {
-  final ForgotPasswordOTPController controller;
+  final OTPForgotController controller;
 
   const Small({Key? key, required this.controller}) : super(key: key);
 
@@ -58,7 +57,7 @@ class Small extends StatelessWidget {
             height: AppMethods.DEFAULT_PADDING,
           ),
           Text(
-            "Enter the verification code we just sent on your email address.",
+            "Enter the verification code we just sent on your ${controller.userModel.email != null ? 'email' : 'phone number'}.",
             style: textStyle(
               context: context,
               color: Theme.of(context).focusColor,
@@ -72,15 +71,15 @@ class Small extends StatelessWidget {
             keyboardType: TextInputType.number,
             contentPadding: EdgeInsets.zero,
             fieldStyle: FieldStyle.box,
-            length: 4,
+            length: 6,
             margin: EdgeInsets.zero,
             style: textStyle(
               context: context,
-              fontSize: FontSize.H3,
+              fontSize: FontSize.H4,
               isBold: true,
               color: Theme.of(context).primaryColor,
             ),
-            fieldWidth: width(context) * 0.2,
+            fieldWidth: width(context) * 0.14,
             otpFieldStyle: OtpFieldStyle(
               enabledBorderColor: Theme.of(context).primaryColor,
               focusBorderColor: Theme.of(context).primaryColor,
@@ -100,41 +99,56 @@ class Small extends StatelessWidget {
               controller.verifyOTP(context);
             },
             text: "Verify",
-            isLoading: false,
+            isLoading: controller.isLoading,
           ),
-          Expanded(
-            child: SizedBox(
-              height: AppMethods.DEFAULT_PADDING,
-            ),
+          SizedBox(
+            height: AppMethods.DEFAULT_PADDING,
           ),
-          RichText(
-              text: TextSpan(
-            children: [
-              TextSpan(
-                text: "Didn't received code? ",
-                style: textStyle(
-                  context: context,
-                ),
-              ),
-              TextSpan(
-                text: 'Resend',
-                style: textStyle(
-                  context: context,
-                  color: Theme.of(context).primaryColor,
-                  isBold: true,
-                  haveUnderline: true,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LoginScreen()),
-                        ModalRoute.withName('/'));
-                  },
-              ),
-            ],
-          )),
+          controller.timerText > 0
+              ? RichText(
+                  text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Please Wait ",
+                      style: textStyle(
+                        context: context,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '${controller.timerText}',
+                      style: textStyle(
+                        context: context,
+                        color: Theme.of(context).primaryColor,
+                        isBold: true,
+                        haveUnderline: true,
+                      ),
+                    ),
+                  ],
+                ))
+              : RichText(
+                  text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Didn't received code? ",
+                      style: textStyle(
+                        context: context,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Resend',
+                      style: textStyle(
+                        context: context,
+                        color: Theme.of(context).primaryColor,
+                        isBold: true,
+                        haveUnderline: true,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          controller.resendOTP(context);
+                        },
+                    ),
+                  ],
+                )),
           SizedBox(
             height: AppMethods.DEFAULT_PADDING,
           ),

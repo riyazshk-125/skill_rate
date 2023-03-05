@@ -46,7 +46,7 @@ class SearchBarWidget extends StatelessWidget {
               key: key,
               onChanged: onChanged,
               keyboardType: TextInputType.text,
-              hint: "Search",
+              hint: "Search by Name / Email / Phone",
 
               style: textStyle(
                 context: context,
