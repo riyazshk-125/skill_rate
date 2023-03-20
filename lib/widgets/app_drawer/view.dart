@@ -9,6 +9,7 @@ import 'package:skill_rate/widgets/app_drawer/controller.dart';
 import 'package:skill_rate/widgets/button.dart';
 import 'package:skill_rate/widgets/flutter_bounce.dart';
 
+import '../../screens/password_change_login/main.dart';
 import '../dotted_line.dart';
 
 class AppDrawerView extends StatelessWidget {
@@ -100,7 +101,15 @@ class AppDrawerView extends StatelessWidget {
                                 "title": "Privacy Policy"
                               })
                             }),
-                    menuItem(context, Icons.lock, "Change Password", () => {}),
+                    menuItem(
+                        context,
+                        Icons.lock,
+                        "Change Password",
+                        () => {
+                              Get.to(
+                                () => PasswordChangeLoginScreen(),
+                              )
+                            }),
                     menuItem(
                         context,
                         Icons.help,

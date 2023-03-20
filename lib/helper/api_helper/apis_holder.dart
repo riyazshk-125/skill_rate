@@ -31,7 +31,7 @@ class ApiHolder {
         return LoginResponseModel();
       } else if (response.statusCode == 400) {
         Fluttertoast.showToast(msg: response.body["message"]);
-        // Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        // Fluttertoast.showToast(msg: response.body["message"]);
         return LoginResponseModel();
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -100,7 +100,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return LoginResponseModel();
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return LoginResponseModel();
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -134,7 +134,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -163,7 +163,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -195,7 +195,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -203,6 +203,33 @@ class ApiHolder {
       } else {
         Fluttertoast.showToast(msg: response.body["message"]);
         return true;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return false;
+    }
+  }
+
+  Future<bool> changePasswordLogin({
+    String? oldPassword,
+    String? password,
+  }) async {
+    try {
+      Map<String, dynamic> body = {
+        "old_password": oldPassword,
+        "password": password,
+        "password_confirmation": password
+      };
+      //Call API
+      var response = await _apiService
+          .callApi("users/changePassword", ApiType.POST, body: body);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return true;
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return false;
       }
     } catch (e) {
       Get.log("$e");
@@ -220,7 +247,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return UserModel();
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return UserModel();
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -244,7 +271,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -274,7 +301,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -303,7 +330,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return [];
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -337,7 +364,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -375,7 +402,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -400,7 +427,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return UserModel();
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return UserModel();
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -429,7 +456,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return SkillDetailModel();
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return SkillDetailModel();
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -457,7 +484,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return "";
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -488,7 +515,7 @@ class ApiHolder {
         Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 400) {
-        Fluttertoast.showToast(msg: response.body["data"]["error"].join("\n"));
+        Fluttertoast.showToast(msg: response.body["message"]);
         return false;
       } else if (response.statusCode == 404) {
         Fluttertoast.showToast(msg: "Invalid access");
@@ -496,6 +523,30 @@ class ApiHolder {
       } else {
         Fluttertoast.showToast(msg: response.body["message"]);
         return true;
+      }
+    } catch (e) {
+      Get.log("$e");
+      Fluttertoast.showToast(msg: "Something wrong");
+      return false;
+    }
+  }
+
+  Future<bool> updateProfile({required UserModel userModel}) async {
+    try {
+      Map<String, dynamic> body = {
+        "username": userModel.username,
+        "email": userModel.email,
+        "mobile": userModel.mobile
+      };
+      //Call API
+      var response = await _apiService
+          .callApi("users/updateUserProfile", ApiType.POST, body: body);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return true;
+      } else {
+        Fluttertoast.showToast(msg: response.body["message"]);
+        return false;
       }
     } catch (e) {
       Get.log("$e");

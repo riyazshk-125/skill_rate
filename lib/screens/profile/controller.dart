@@ -24,8 +24,10 @@ class ProfileController extends GetxController {
   List<MySkillsModel> mySkills = [];
   bool isSkillSaving = false;
   bool isLoading = false;
+  bool isUpdatingLoading = false;
   bool isReadOnlyEmail = false;
   bool isReadOnlyMobile = false;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void onInit() {
@@ -281,5 +283,30 @@ class ProfileController extends GetxController {
     update();
   }
 
-  void updateProfile(BuildContext context) async {}
+  void updateProfile(BuildContext context) async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+    isUpdatingLoading = true;
+    update();
+    UserModel newModel = userModel;
+    if (emailController.text.trim().isNotEmpty) {
+      newModel.email = emailController.text.trim();
+    }
+    if (phoneController.text.trim().isNotEmpty) {
+      newModel.mobile = phoneController.text.trim();
+    }
+    bool isSuccess = await apiHolder.updateProfile(userModel: newModel);
+    Get.log("Is Success ----> $isSuccess");
+    if (isSuccess) {
+      userModel = await apiHolder.userProfile();
+    } else {
+      emailController.clear();
+      phoneController.clear();
+    }
+    isReadOnlyEmail = userModel.email != null && userModel.email!.isNotEmpty;
+    isReadOnlyMobile = userModel.mobile != null && userModel.mobile!.isNotEmpty;
+    isUpdatingLoading = false;
+    setValues();
+  }
 }

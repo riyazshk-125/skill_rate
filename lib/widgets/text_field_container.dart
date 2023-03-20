@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/helper/styles.dart';
 
-import 'flutter_bounce.dart';
 import 'text_field.dart';
 
 class TextFieldContainer extends StatelessWidget {
@@ -48,8 +45,8 @@ class TextFieldContainer extends StatelessWidget {
         onTap: onTap,
         child: Container(
           // height: 50,
-          margin: EdgeInsets.only(bottom: AppMethods.DEFAULT_PADDING / 2),
-          decoration: BoxDecoration(
+          // margin: EdgeInsets.only(bottom: AppMethods.DEFAULT_PADDING / 2),
+          /*decoration: BoxDecoration(
             color: bgColor ?? Theme.of(context).canvasColor,
             border: Border.all(
               color: borderColor ?? Theme.of(context).dividerColor,
@@ -57,11 +54,7 @@ class TextFieldContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(
               8,
             ),
-          ),
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 20,
-          ),
+          ),*/
           child: IgnorePointer(
             ignoring: onTap != null,
             child: Row(
@@ -79,7 +72,7 @@ class TextFieldContainer extends StatelessWidget {
                     readOnly: readOnly,
                     showText: showText,
                     validator: validator,
-
+                    onToggle: onToggle,
                     style: textStyle(
                       context: context,
                       fontSize: FontSize.H4,
@@ -93,18 +86,6 @@ class TextFieldContainer extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (showText != null)
-                  Bounce(
-                    onPressed: () {
-                      onToggle!();
-                    },
-                    child: SvgPicture.asset(
-                      !showText! ? "asset/svg/hide.svg" : "asset/svg/show.svg",
-                      color: Theme.of(context).splashColor,
-                      width: 25,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
               ],
             ),
           ),

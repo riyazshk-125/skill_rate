@@ -227,6 +227,56 @@ class Small extends StatelessWidget {
                           horizontal: AppMethods.DEFAULT_PADDING),
                       child: ListView(
                         children: [
+                          if (controller.myGivenRating.id == null) ...[
+                            Divider(),
+                            Text(
+                              "Rate and Review",
+                              style: textStyle(
+                                context: context,
+                                isBold: true,
+                              ),
+                            ),
+                            Text(
+                              "Share your experience to help other",
+                              style: textStyle(
+                                context: context,
+                                fontSize: FontSize.H6,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Center(
+                              child: RatingBar(
+                                itemSize: 60,
+                                ratingWidget: RatingWidget(
+                                  full: const Icon(
+                                    Icons.star,
+                                    size: 10,
+                                    color: Color(0xFFDFB300),
+                                  ),
+                                  half: const Icon(
+                                    Icons.star,
+                                    size: 10,
+                                    color: Color(0xFFDFB300),
+                                  ),
+                                  empty: const Icon(
+                                    Icons.star,
+                                    size: 10,
+                                    color: Color(0xFF494949),
+                                  ),
+                                ),
+                                onRatingUpdate: (double value) {
+                                  controller.openAddRatingDialog(
+                                      context, null, value);
+                                },
+                                allowHalfRating: false,
+                                initialRating: 0,
+                                wrapAlignment: WrapAlignment.center,
+                              ),
+                            ),
+                            Divider(),
+                          ],
                           ...[
                             ...List.generate(
                               controller.skillDetailModel.userSkillRating?.data
@@ -444,54 +494,7 @@ class Small extends StatelessWidget {
                               ),
                             )
                           ],
-                          if (controller.myGivenRating.id == null) ...[
-                            Divider(),
-                            Text(
-                              "Rate and Review",
-                              style: textStyle(
-                                context: context,
-                                isBold: true,
-                              ),
-                            ),
-                            Text(
-                              "Share your experience to help other",
-                              style: textStyle(
-                                context: context,
-                                fontSize: FontSize.H6,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            RatingBar(
-                              itemSize: 60,
-                              ratingWidget: RatingWidget(
-                                full: const Icon(
-                                  Icons.star,
-                                  size: 10,
-                                  color: Color(0xFFDFB300),
-                                ),
-                                half: const Icon(
-                                  Icons.star,
-                                  size: 10,
-                                  color: Color(0xFFDFB300),
-                                ),
-                                empty: const Icon(
-                                  Icons.star,
-                                  size: 10,
-                                  color: Color(0xFF494949),
-                                ),
-                              ),
-                              onRatingUpdate: (double value) {
-                                controller.openAddRatingDialog(
-                                    context, null, value);
-                              },
-                              allowHalfRating: false,
-                              initialRating: 0,
-                              wrapAlignment: WrapAlignment.center,
-                            ),
-                            Divider(),
-                          ],
+
                           /*Center(
                               child: Bounce(
                                 onPressed: () {

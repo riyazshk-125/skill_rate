@@ -15,7 +15,7 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: AppMethods.DEFAULT_PADDING / 2),
-      decoration: BoxDecoration(
+      /*decoration: BoxDecoration(
         // color: Theme.of(context).canvasColor,
         border: Border.all(
           color: Theme.of(context).dividerColor,
@@ -27,41 +27,32 @@ class SearchBarWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         vertical: AppMethods.DEFAULT_PADDING / 3,
         horizontal: AppMethods.DEFAULT_PADDING / 2,
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.search_outlined,
-            color: Theme.of(context).splashColor,
-            size: 25,
-          ),
-          SizedBox(
-            width: AppMethods.DEFAULT_PADDING / 2,
-          ),
-          Expanded(
-            child: AppTextField(
-              textEditingController: textEditingController,
-              // icon: icon,
-              isLastField: true,
-              key: key,
-              onChanged: onChanged,
-              keyboardType: TextInputType.text,
-              hint: "Search by Name / Email / Phone",
+      ),*/
+      child: AppTextField(
+        textEditingController: textEditingController,
+        // icon: icon,
+        isLastField: true,
+        prefixIcon: Icon(
+          Icons.search_outlined,
+          color: Theme.of(context).splashColor,
+          size: 25,
+        ),
+        key: key,
+        onChanged: onChanged,
+        keyboardType: TextInputType.text,
+        hint: "Search by Name / Email / Phone",
 
-              style: textStyle(
-                context: context,
-                fontSize: FontSize.H4,
-                // isBold: true,
-                color: Theme.of(context).shadowColor,
-              ),
-              hintStyle: textStyle(
-                context: context,
-                fontSize: FontSize.H4,
-                color: Theme.of(context).splashColor,
-              ),
-            ),
-          )
-        ],
+        style: textStyle(
+          context: context,
+          fontSize: FontSize.H4,
+          // isBold: true,
+          color: Theme.of(context).shadowColor,
+        ),
+        hintStyle: textStyle(
+          context: context,
+          fontSize: FontSize.H4,
+          color: Theme.of(context).splashColor,
+        ),
       ),
     );
   }
