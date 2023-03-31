@@ -11,7 +11,7 @@ import '../../widgets/flutter_bounce.dart';
 import '../../widgets/rating_widget/rating_bar.dart';
 import '../../widgets/text_field_container.dart';
 
-class SkillRatingDetailController extends GetxController {
+class MySkillRatingDetailController extends GetxController {
   SkillDetailModel skillDetailModel = SkillDetailModel();
 
   Data myGivenRating = Data();
@@ -78,9 +78,6 @@ class SkillRatingDetailController extends GetxController {
     skillDetailModel = await apiHolder.getSkillDetail(skillId);
 
     if (myProfile.id != null) {
-      skillDetailModel.userSkillRating?.data?.removeWhere((element) =>
-          element.reviewedByInfo?.id != myProfile.id &&
-          element.isApproved == "0");
       var filterData = skillDetailModel.userSkillRating?.data
           ?.where((element) => element.reviewedByInfo?.id == myProfile.id);
       if (filterData != null && filterData.isNotEmpty) {
@@ -106,8 +103,8 @@ class SkillRatingDetailController extends GetxController {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppMethods.DEFAULT_PADDING),
           child: Card(
-            child: GetBuilder<SkillRatingDetailController>(
-              init: SkillRatingDetailController(),
+            child: GetBuilder<MySkillRatingDetailController>(
+              init: MySkillRatingDetailController(),
               builder: (controller) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

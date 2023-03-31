@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skill_rate/helper/models/my_skills_model.dart';
@@ -308,5 +307,9 @@ class ProfileController extends GetxController {
     isReadOnlyMobile = userModel.mobile != null && userModel.mobile!.isNotEmpty;
     isUpdatingLoading = false;
     setValues();
+  }
+
+  Future<void> refreshData() async {
+    getMySkills();
   }
 }

@@ -288,4 +288,8 @@ class OtherProfileController extends GetxController {
       ),
     ));
   }
+
+  Future<void> refreshData() async {
+    getUserData(userId);
+  }
 }

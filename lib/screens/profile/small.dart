@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:skill_rate/helper/extensions.dart';
 import 'package:skill_rate/helper/shared_files.dart';
 import 'package:skill_rate/widgets/button.dart';
@@ -10,6 +10,7 @@ import '../../helper/validation_helper.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/menu_button.dart';
 import '../../widgets/rating_widget/rating_bar.dart';
+import '../my_skill_rating_detail/main.dart';
 import 'controller.dart';
 
 class Small extends StatelessWidget {
@@ -68,43 +69,66 @@ class Small extends StatelessWidget {
             height: 1,
             color: Theme.of(context).shadowColor.withOpacity(0.25),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppMethods.DEFAULT_PADDING / 2),
-            child: Form(
-              key: controller.formKey,
-              child: Column(
-                // mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: controller.refreshData,
+              child: ListView(
                 children: [
-                  SizedBox(
-                    height: AppMethods.DEFAULT_PADDING / 2,
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.nameController,
-                    bgColor: Theme.of(context).scaffoldBackgroundColor,
-                    borderColor: Theme.of(context).dividerColor,
-                    hint: "Name",
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.emailController,
-                    bgColor: Theme.of(context).scaffoldBackgroundColor,
-                    borderColor: Theme.of(context).dividerColor,
-                    hint: "Email",
-                    textColor: Theme.of(context).splashColor,
-                    readOnly: controller.isReadOnlyEmail,
-                    validator: (value) =>
-                        Validator.validateEmail((value ?? " ").trim()),
-                  ),
-                  TextFieldContainer(
-                    textEditingController: controller.phoneController,
-                    bgColor: Theme.of(context).scaffoldBackgroundColor,
-                    borderColor: Theme.of(context).dividerColor,
-                    hint: "Mobile",
-                    textColor: Theme.of(context).splashColor,
-                    readOnly: controller.isReadOnlyMobile,
-                    validator: (value) =>
-                        Validator.validatePhone((value ?? " ").trim(), false),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppMethods.DEFAULT_PADDING / 2),
+                    child: Form(
+                      key: controller.formKey,
+                      child: Column(
+                        // mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: AppMethods.DEFAULT_PADDING / 2,
+                          ),
+                          TextFieldContainer(
+                            textEditingController: controller.nameController,
+                            bgColor: Theme.of(context).scaffoldBackgroundColor,
+                            borderColor: Theme.of(context).dividerColor,
+                            hint: "Name",
+                          ),
+                          TextFieldContainer(
+                            textEditingController: controller.emailController,
+                            bgColor: Theme.of(context).scaffoldBackgroundColor,
+                            borderColor: Theme.of(context).dividerColor,
+                            hint: "Email",
+                            textColor: Theme.of(context).splashColor,
+                            readOnly: controller.isReadOnlyEmail,
+                            validator: (value) =>
+                                Validator.validateEmail((value ?? " ").trim()),
+                          ),
+                          TextFieldContainer(
+                            textEditingController: controller.phoneController,
+                            bgColor: Theme.of(context).scaffoldBackgroundColor,
+                            borderColor: Theme.of(context).dividerColor,
+                            hint: "Mobile",
+                            textColor: Theme.of(context).splashColor,
+                            readOnly: controller.isReadOnlyMobile,
+                            validator: (value) => Validator.validatePhone(
+                                (value ?? " ").trim(), false),
+                          ),
+                          SizedBox(
+                            height: AppMethods.DEFAULT_PADDING,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppMethods.DEFAULT_PADDING),
+                            child: AppButton(
+                              text: "Update Profile",
+                              onTap: () {
+                                controller.updateProfile(context);
+                              },
+                              isLoading: controller.isUpdatingLoading,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: AppMethods.DEFAULT_PADDING,
@@ -112,173 +136,162 @@ class Small extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: AppMethods.DEFAULT_PADDING),
+                    child: !controller.isLoading
+                        ? Column(
+                            children: List.generate(
+                              controller.mySkills.length,
+                              (index) => GestureDetector(
+                                onTap: () {
+                                  if (controller
+                                          .mySkills[index].userSkillsName !=
+                                      null) {
+                                    Get.to(() => MySkillRatingDetailScreen(),
+                                        arguments:
+                                            "${controller.mySkills[index].id ?? 0}");
+                                  }
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      bottom: AppMethods.DEFAULT_PADDING / 2),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).canvasColor,
+                                    border: Border.all(
+                                      color: Theme.of(context).dividerColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      8,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 20,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          controller.mySkills[index]
+                                                  .userSkillsName?.name ??
+                                              "",
+                                          style: textStyle(
+                                            context: context,
+                                            fontSize: FontSize.H3,
+                                          ),
+                                        ),
+                                      ),
+                                      IgnorePointer(
+                                        ignoring: true,
+                                        child: RatingBar(
+                                          itemSize: 15,
+                                          ratingWidget: RatingWidget(
+                                            full: const Icon(
+                                              Icons.star,
+                                              size: 10,
+                                              color: Color(0xFFDFB300),
+                                            ),
+                                            half: const Icon(
+                                              Icons.star,
+                                              size: 10,
+                                              color: Color(0xFFDFB300),
+                                            ),
+                                            empty: const Icon(
+                                              Icons.star,
+                                              size: 10,
+                                              color: Color(0xFF494949),
+                                            ),
+                                          ),
+                                          onRatingUpdate: (double value) {},
+                                          allowHalfRating: false,
+                                          initialRating: double.parse(controller
+                                                  .mySkills[index].avgRating ??
+                                              "0.0"),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Column(
+                            children: List.generate(
+                              3,
+                              (index) => Container(
+                                margin: EdgeInsets.only(
+                                    bottom: AppMethods.DEFAULT_PADDING / 2),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).canvasColor,
+                                  border: Border.all(
+                                    color: Theme.of(context).dividerColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    8,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 20,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "",
+                                        style: textStyle(
+                                          context: context,
+                                          fontSize: FontSize.H3,
+                                        ),
+                                      ),
+                                    ),
+                                    IgnorePointer(
+                                      ignoring: true,
+                                      child: RatingBar(
+                                        itemSize: 15,
+                                        ratingWidget: RatingWidget(
+                                          full: const Icon(
+                                            Icons.star,
+                                            size: 10,
+                                            color: Color(0xFFDFB300),
+                                          ),
+                                          half: const Icon(
+                                            Icons.star,
+                                            size: 10,
+                                            color: Color(0xFFDFB300),
+                                          ),
+                                          empty: const Icon(
+                                            Icons.star,
+                                            size: 10,
+                                            color: Color(0xFF494949),
+                                          ),
+                                        ),
+                                        onRatingUpdate: (double value) {},
+                                        allowHalfRating: false,
+                                        initialRating: 2,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ).shimmer(context),
+                            ),
+                          ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppMethods.DEFAULT_PADDING * 3 / 2),
                     child: AppButton(
-                      text: "Update Profile",
+                      text: "Add Skill",
                       onTap: () {
-                        controller.updateProfile(context);
+                        controller.addSkills(context);
                       },
-                      isLoading: controller.isUpdatingLoading,
                     ),
+                  ),
+                  SizedBox(
+                    height: AppMethods.DEFAULT_PADDING,
                   ),
                 ],
               ),
             ),
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING,
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: AppMethods.DEFAULT_PADDING),
-              child: !controller.isLoading
-                  ? ListView(
-                      children: List.generate(
-                        controller.mySkills.length,
-                        (index) => GestureDetector(
-                          onTap: () {
-                            Fluttertoast.showToast(
-                                msg: "You can not rate own skill");
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                bottom: AppMethods.DEFAULT_PADDING / 2),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor,
-                              border: Border.all(
-                                color: Theme.of(context).dividerColor,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                8,
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 20,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    controller.mySkills[index].userSkillsName
-                                            ?.name ??
-                                        "",
-                                    style: textStyle(
-                                      context: context,
-                                      fontSize: FontSize.H3,
-                                    ),
-                                  ),
-                                ),
-                                IgnorePointer(
-                                  ignoring: true,
-                                  child: RatingBar(
-                                    itemSize: 15,
-                                    ratingWidget: RatingWidget(
-                                      full: const Icon(
-                                        Icons.star,
-                                        size: 10,
-                                        color: Color(0xFFDFB300),
-                                      ),
-                                      half: const Icon(
-                                        Icons.star,
-                                        size: 10,
-                                        color: Color(0xFFDFB300),
-                                      ),
-                                      empty: const Icon(
-                                        Icons.star,
-                                        size: 10,
-                                        color: Color(0xFF494949),
-                                      ),
-                                    ),
-                                    onRatingUpdate: (double value) {},
-                                    allowHalfRating: false,
-                                    initialRating: double.parse(
-                                        controller.mySkills[index].avgRating ??
-                                            "0.0"),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : ListView(
-                      children: List.generate(
-                        3,
-                        (index) => Container(
-                          margin: EdgeInsets.only(
-                              bottom: AppMethods.DEFAULT_PADDING / 2),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).canvasColor,
-                            border: Border.all(
-                              color: Theme.of(context).dividerColor,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              8,
-                            ),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 20,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "",
-                                  style: textStyle(
-                                    context: context,
-                                    fontSize: FontSize.H3,
-                                  ),
-                                ),
-                              ),
-                              IgnorePointer(
-                                ignoring: true,
-                                child: RatingBar(
-                                  itemSize: 15,
-                                  ratingWidget: RatingWidget(
-                                    full: const Icon(
-                                      Icons.star,
-                                      size: 10,
-                                      color: Color(0xFFDFB300),
-                                    ),
-                                    half: const Icon(
-                                      Icons.star,
-                                      size: 10,
-                                      color: Color(0xFFDFB300),
-                                    ),
-                                    empty: const Icon(
-                                      Icons.star,
-                                      size: 10,
-                                      color: Color(0xFF494949),
-                                    ),
-                                  ),
-                                  onRatingUpdate: (double value) {},
-                                  allowHalfRating: false,
-                                  initialRating: 2,
-                                ),
-                              )
-                            ],
-                          ),
-                        ).shimmer(context),
-                      ),
-                    ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppMethods.DEFAULT_PADDING * 3 / 2),
-            child: AppButton(
-              text: "Add Skill",
-              onTap: () {
-                controller.addSkills(context);
-              },
-            ),
-          ),
-          SizedBox(
-            height: AppMethods.DEFAULT_PADDING,
-          ),
+          )
         ],
       ),
     ).scaffold(scaffoldKey);
