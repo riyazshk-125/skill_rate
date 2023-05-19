@@ -8,7 +8,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../main.dart';
 
 class ApiService extends GetConnect {
-  final String _BASE_URL = "https://skillrate.doctecqclinic.com/api/";
+  final String _BASE_URL = "https://skillrate.co.in/api/";
   final String _API_KEY =
       "JDJ5JDEwJDg1OEpoT2pJLzhWdU5pdGhpY3JSU09YLjUwRWYyeUZ5T2Z2Q0drMU5xMHZPSXE1WWJkeU9x";
 
